@@ -31,7 +31,7 @@ class AppData(models.Model): #student application that will be filled out each s
 	placement       = models.NullBooleanField()
 
 
-class sitePlacementRank(models.Model): #section of application that will rank where the student would like to be placed
+class SitePlacementRank(models.Model): #section of application that will rank where the student would like to be placed
 	app_data         = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
 	after_school     = models.IntegerField(null=True)
 	medical          = models.IntegerField(null=True)

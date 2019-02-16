@@ -1,0 +1,19 @@
+
+<<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Application</title>
+  </head>
+  <body>
+
+<form action="." method="POST"> {% csrf_token %}
+    {{ PersonalInfoForm.as_p }}
+    {{ AppDataForm.as_p }}
+    {{ SitePlacementRankForm.as_p }}
+    {{ AppAvailabilityForm.as_p }}
+    <p><button type = "sumbit" >Save</button>
+</form>
+
+</body>
+</html>>
