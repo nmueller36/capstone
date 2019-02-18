@@ -55,7 +55,9 @@ ROOT_URLCONF = 'ccecws.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS' : [#\Users\nmuel\Documents\CCEC-Work-Study\ccecws\workstudy\pages\my_template.html
+			BASE_DIR + '/ccecws/pages/',
+		],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
