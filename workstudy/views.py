@@ -32,5 +32,5 @@ def index(request):
 			#render(request, "my_template.html", {'items': items})
 	else:
 		form = PersonalInfoForm()
-		items = PersonalInfo.objects.all()
-		return render(request, "my_template.html", {'items': items})
+		#items = PersonalInfo.objects.all()
+		return render(request, "my_template.html", {'form': form})
