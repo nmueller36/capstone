@@ -5,7 +5,9 @@ class PersonalInfo(models.Model): #main table that contains information that wil
 	student_id = models.IntegerField(primary_key = True)
 	first_name = models.CharField(max_length=256)
 	last_name  = models.CharField(max_length=256)
+	perferred_name = models.CharField(max_length=256)
 	email      = models.CharField(max_length=256)
+
 
 class AppData(models.Model): #student application that will be filled out each semester. will sort by semester
 	personal_info   = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE, blank=True, null=True)
@@ -29,7 +31,6 @@ class AppData(models.Model): #student application that will be filled out each s
 	keep_schedule   = models.NullBooleanField()
 	hear_about_ccec = models.CharField(max_length=256, null=True)
 	placement       = models.NullBooleanField()
-
 
 class SitePlacementRank(models.Model): #section of application that will rank where the student would like to be placed
 	app_data         = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
@@ -58,6 +59,7 @@ class SiteInfo(models.Model): #important information regarding the sites that ca
 	second_contact = models.CharField(max_length=256, null=True)
 	second_contact_email = models.CharField(max_length=256, null=True)
 	second_contact_number = models.CharField(max_length=256, null=True)
+	clearances_needed    = models.CharField(max_length=256, null=True)
 	comments             = models.CharField(max_length=10000, null=True)
 
 

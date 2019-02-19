@@ -10,6 +10,10 @@ from workstudy.models import PersonalInfo, AppData, AppAvailability,StudentPlace
 
 #	return HttpResponse("hello world")#hold html page
 
+#add how many total hours a student worked per semester
+#add how many total hours worked at each sites per semester
+
+
 def search(request):
 	pass
 
@@ -32,5 +36,4 @@ def index(request):
 			#render(request, "my_template.html", {'items': items})
 	else:
 		form = PersonalInfoForm()
-		#items = PersonalInfo.objects.all()
 		return render(request, "my_template.html", {'form': form})
