@@ -7,6 +7,8 @@
     <form action="." method="POST"> {% csrf_token %}
         {{ personal_info_form|crispy }}
         {{ app_data_form|crispy }}
+        <p> Please numerically rank your choices for a site placement in order of preference, with 1 being your ideal placement.<p>
+          {{site_placement_rank_form|crispy}}
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
 </div>

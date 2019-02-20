@@ -25,13 +25,20 @@ def application(request):
 	if request.method == "POST":
 		personal_info_form = PersonalInfoForm(request.POST)
 		app_data_form = AppDataForm(request.POST)
-		if personal_info_form.is_valid() and app_data_form.is_valid():
+		site_placement_rank_form = SitePlacementRankForm(request.POST)
+
+		if personal_info_form.is_valid() and app_data_form.is_valid() and site_placement_rank_form.is_valid():
 			personal_info_instance = personal_info_form.save(commit=False)
 			app_data_instance = app_data_form.save(commit=False)
+			site_placement_rank_instance = site_placement_rank_form.save(commit=False)
 			# here you can add more fields or change them the way you want, after that you will save them
 			app_data_instance.personal_info = personal_info_instance
+			site_placement_rank_instance.app_data = app_data_instance
+
 			personal_info_instance.save()
 			app_data_instance.save()
+			site_placement_rank_instance.save()
+
 			# return redirect('workstudy:application-details', pk=app_data_instance.pk)
 			return redirect('workstudy:application-completed')
 		# if the form validation failed, for now just show the application form again and show the error
@@ -43,6 +50,8 @@ def application(request):
 		context = {}
 		personal_info_form = PersonalInfoForm()
 		app_data_form = AppDataForm()
+		site_placement_rank_form = SitePlacementRankForm()
 		context['personal_info_form'] = personal_info_form
 		context['app_data_form'] = app_data_form
+		context['site_placement_rank_form'] = site_placement_rank_form
 		return render(request, 'application.html', context)

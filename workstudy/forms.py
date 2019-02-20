@@ -12,7 +12,8 @@ class AppDataForm (forms.ModelForm):
         model = AppData
         fields = '__all__'
         # exclude field(s) that the users should not see on the page
-        exclude = ('personal_info', )
+        exclude = ('personal_info', 'placement')
+
 
     def __init__(self, *args, **kwargs):
         # calling the mothership to initialize all its variables before updating the form
@@ -25,7 +26,9 @@ class AppDataForm (forms.ModelForm):
         )
         # change the default label for the car field in the AppData model
         # alternatively, you can just add verbose_name=u"Do you have a car?"
-        self.fields['car'].label = "Do you have a car?"
+        #self.fields['car'].label = "Do you have a car?"
+
+
         # make the fields required, for some reason it was not set before
         self.fields['car'].required = True
         self.fields['work_study'].required = True
@@ -35,12 +38,19 @@ class AppDataForm (forms.ModelForm):
         self.fields['ccec_ws'].required = True
         self.fields['remain_at_site'].required = True
         self.fields['keep_schedule'].required = True
-        self.fields['placement'].required = True
+    #    self.fields['placement'].required = True
 
 class SitePlacementRankForm (forms.ModelForm):
     class Meta:
         model = SitePlacementRank
         fields = '__all__'
+        exclude = ('app_data',)
+
+    def __init__(self, *args, **kwargs):
+        # calling the mothership to initialize all its variables before updating the form
+        super(SitePlacementRankForm, self).__init__(*args, **kwargs)
+
+
 
 class AppAvailabilityForm (forms.ModelForm):
     class Meta:
