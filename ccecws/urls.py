@@ -21,3 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 	path('', include('workstudy.urls'))
 ]
+
+handler404 = 'workstudy.views.index'

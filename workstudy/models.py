@@ -1,25 +1,43 @@
 from django.db import models
 
+MONTHS = (
+	# ('choice set in the model', 'human-readable format of the choice for the website')
+	('january', 'January'),
+	('february', 'February'),
+	('march', 'March'),
+	('april', 'April'),
+	('may', 'May'),
+	('june', 'June'),
+	('july', 'July'),
+	('august', 'August'),
+	('september', 'September'),
+	('october', 'October'),
+	('november', 'November'),
+	('december', 'December'),
+)
+
 # Create your models here.
 class PersonalInfo(models.Model): #main table that contains information that will be used for multiple tables
-	student_id = models.IntegerField(primary_key = True)
-	first_name = models.CharField(max_length=256)
-	last_name  = models.CharField(max_length=256)
-	perferred_name = models.CharField(max_length=256)
-	email      = models.CharField(max_length=256)
-
+	student_id     = models.IntegerField(primary_key = True)
+	first_name     = models.CharField(max_length=256)
+	preferred_name = models.CharField(max_length=256)
+	last_name      = models.CharField(max_length=256)
+	pronouns       = models.CharField(max_length=256)
+	email          = models.CharField(max_length=256)
+	def __str__(self):
+		return self.first_name + " " + self.last_name + " (" + self.email + ")"
 
 class AppData(models.Model): #student application that will be filled out each semester. will sort by semester
 	personal_info   = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE, blank=True, null=True)
 	semester        = models.CharField(max_length=100)
-	timeStamp       = models.DateTimeField(auto_now_add = True)
+	timeStamp       = models.DateTimeField(auto_now_add=True)
 	phone_num       = models.CharField(max_length=256, null=True) #should I make this an int?
-	grad_month      = models.CharField(max_length = 256, null=True)
+	grad_month      = models.CharField(max_length=256, choices=MONTHS)
 	grad_year       = models.IntegerField(null=True)
 	work_study      = models.NullBooleanField()
 	car             = models.NullBooleanField()
-	carpool         = models.NullBooleanField()
-	wanted_hours    = models.IntegerField(null=True)
+	carpool         = models.NullBooleanField(verbose_name=u"Will you be willing to carpool?")
+	wanted_hours    = models.IntegerField()
 	major           = models.CharField(max_length=256, null=True)
 	foreign_lang    = models.NullBooleanField()
 	languages       = models.CharField(max_length=256, null=True)
@@ -31,6 +49,9 @@ class AppData(models.Model): #student application that will be filled out each s
 	keep_schedule   = models.NullBooleanField()
 	hear_about_ccec = models.CharField(max_length=256, null=True)
 	placement       = models.NullBooleanField()
+	def __str__(self):
+		return self.personal_info.first_name + " " + self.personal_info.last_name + " (" + self.personal_info.email + ")" + " " + self.semester
+
 
 class SitePlacementRank(models.Model): #section of application that will rank where the student would like to be placed
 	app_data         = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
@@ -69,6 +90,7 @@ class StudentPlacement(models.Model): #once a ccec worker finds a placement for 
 	site_info       = models.ForeignKey(SiteInfo, on_delete=models.CASCADE, blank=True, null=True)
 	driver          = models.CharField(max_length=256,null=True)
 	total_hours     = models.IntegerField(null=True)
+	started         = models.CharField(max_length=256, null=True)
 	fbi_fingerprint = models.CharField(max_length=256, null=True)
 	child_abuse     = models.CharField(max_length=256, null=True)
 	state_police    = models.CharField(max_length=256, null=True)

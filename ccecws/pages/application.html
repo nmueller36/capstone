@@ -1,18 +1,13 @@
 {% extends 'base.html' %}
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Application</title>
-  </head>
-  <body>
 
-<form action="." method="POST"> {% csrf_token %}
-    {{ PersonalInfoForm.as_p }}
-  <!-- {{ AppDataForm.as_p }} -->
-  <!-- {{ SitePlacementRankForm.as_p }}
-    {{ AppAvailabilityForm.as_p }}-->
-    <p><button type = "sumbit" >Save</button>
-</form>
+{% load crispy_forms_tags %}
 
-</body>
-</html>>
+{% block content %}
+<div class="lead">
+    <form action="." method="POST"> {% csrf_token %}
+        {{ personal_info_form|crispy }}
+        {{ app_data_form|crispy }}
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
