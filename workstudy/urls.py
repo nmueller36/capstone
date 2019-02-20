@@ -1,11 +1,11 @@
-from django.urls import path
+from django.conf.urls import url
 
 from . import views
 
+app_name = 'workstudy'
+
 urlpatterns = [
-	path('', views.index, name="index"),
-	#path('search/', views.search, name="search"),
-	#path('edit/', views.edit, name="edit"),
-	#path('add/', views.add, name="add"),
-	#path('application/' views.add_model, name="application")
+	url(r'^$', views.index, name="index"),
+	url(r'^application/$', views.application, name="application"),
+	url(r'^application/completed/$', views.application_completed, name="application-completed"),
 ]

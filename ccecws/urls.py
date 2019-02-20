@@ -12,15 +12,14 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-    Test change
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.conf.urls import include, url
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-	path('', include('workstudy.urls'))
+    url(r'^', include('workstudy.urls', namespace="workstudy")),
+    url(r'^admin/', admin.site.urls)
 ]
 
 handler404 = 'workstudy.views.index'
