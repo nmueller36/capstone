@@ -27,7 +27,7 @@ def search(request):
 		results = AppAvailability.objects.all()
 
 	context = {
-		'items': results
+		'items': results,
 	}
 
 	return render(request, "search.html", context)
