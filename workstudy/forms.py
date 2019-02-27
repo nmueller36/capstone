@@ -20,10 +20,25 @@ class AppDataForm (forms.ModelForm):
         super(AppDataForm, self).__init__(*args, **kwargs)
         # grab the current year
         current_year = datetime.datetime.now().year
+
+        #updates year in semester in March of every year
+        fall_semester = "Fall {}".format(current_year)
+        spring_semester = "Spring {}".format(current_year+1)
+
         # set the grad_year to be pre-filled with the years ahead
         self.fields['grad_year'] = forms.ChoiceField(
             choices = [(year, year) for year in range(current_year, current_year + 8)]
         )
+        self.fields['semester'] = forms.ChoiceField(
+            choices = [
+                ("spring " + str(current_year), "Spring " + str(current_year)),
+                ("fall " + str(current_year), "Fall " + str(current_year)),
+                ("spring " + str(current_year + 1), "Spring " + str(current_year + 1))
+        ]
+        )
+
+        self.fields['grad_year'].label = "Graduation Year"
+
         # change the default label for the car field in the AppData model
         # alternatively, you can just add verbose_name=u"Do you have a car?"
         #self.fields['car'].label = "Do you have a car?"
