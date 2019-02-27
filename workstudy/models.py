@@ -18,12 +18,12 @@ MONTHS = (
 
 RANKING = (
 	# choices for Site Placement Ranking
-	('one', '1'),
-	('two','2'),
-	('three', '3'),
-	('four', '4'),
-	('five', '5'),
-	('six', '6'),
+	('1', '1'),
+	('2', '2'),
+	('3', '3'),
+	('4', '4'),
+	('5', '5'),
+	('6', '6'),
 
 )
 
@@ -70,12 +70,12 @@ class AppData(models.Model): #student application that will be filled out each s
 
 class SitePlacementRank(models.Model): #section of application that will rank where the student would like to be placed
 	app_data         = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
-	after_school     = models.IntegerField(null=True, verbose_name=u"After School" ,choices = RANKING)
-	medical          = models.IntegerField(null=True, choices = RANKING)
-	community_center = models.IntegerField(null=True,verbose_name= u"Community Center", choices = RANKING)
-	charity_org      = models.IntegerField(null=True, verbose_name= u"Charity Organization", choices = RANKING)
-	hospice          = models.IntegerField(null=True, choices = RANKING)
-	other            = models.IntegerField(null=True, choices = RANKING)
+	after_school     = models.CharField(max_length=1, null=True, verbose_name=u"After School" ,choices = RANKING)
+	medical          = models.CharField(max_length=1, null=True, choices = RANKING)
+	community_center = models.CharField(max_length=1, null=True,verbose_name= u"Community Center", choices = RANKING)
+	charity_org      = models.CharField(max_length=1, null=True, verbose_name= u"Charity Organization", choices = RANKING)
+	hospice          = models.CharField(max_length=1, null=True, choices = RANKING)
+	other            = models.CharField(max_length=1, null=True, choices = RANKING)
 	def __str__(self):
 		return self.personal_info.first_name + " " + self.personal_info.last_name + " (" + self.personal_info.email + ")" + " " + self.semester
 
