@@ -42,25 +42,27 @@ class PersonalInfo(models.Model): #main table that contains information that wil
 
 class AppData(models.Model): #student application that will be filled out each semester. will sort by semester
 	personal_info   = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE, blank=True, null=True)
-	semester        = models.CharField(max_length=100)
+	semester        = models.CharField(max_length=100, verbose_name= u"Semester (example: 'Spring 2019' or 'Fall 2018' )")
 	timeStamp       = models.DateTimeField(auto_now_add=True)
-	phone_num       = models.CharField(max_length=256, null=True) #should I make this an int?
-	grad_month      = models.CharField(max_length=256, choices=MONTHS, verbose_name= "Graduation Month")
-	grad_year       = models.IntegerField(null=True, verbose_name= "Graduation Year")
-	work_study      = models.NullBooleanField(verbose_name= "Do you qualify for federal work study?")
-	car             = models.NullBooleanField(verbose_name= "Do you have a car?")
+	phone_num       = models.CharField(max_length=256, null=True, verbose_name= u"Phone Number") #should I make this an int?
+	grad_month      = models.CharField(max_length=256, choices=MONTHS, verbose_name= u"Graduation Month")
+	grad_year       = models.IntegerField(null=True)
+	work_study      = models.NullBooleanField(verbose_name= u"Do you qualify for federal work study?")
+	for_class       = models.NullBooleanField(verbose_name= u"Is this for a class?")
+	what_class      = models.CharField(max_length=256, null=True, verbose_name= u"If so, what class is it for?")
+	car             = models.NullBooleanField(verbose_name= u"Do you have a car?")
 	carpool         = models.NullBooleanField(verbose_name=u"Are you willing to be a carpool driver?")
-	wanted_hours    = models.IntegerField(verbose_name= "How many total hours a week would you like to work?")
+	wanted_hours    = models.IntegerField(verbose_name= u"How many total hours a week would you like to work?")
 	major           = models.CharField(max_length=256, null=True)
-	foreign_lang    = models.NullBooleanField(verbose_name="Are you fluent in a foreign language?")
-	languages       = models.CharField(max_length=256, null=True, verbose_name= "What languages?")
-	clearances      = models.NullBooleanField(verbose_name= "Do you have clearances? (Child Abuse, FBI Fingerprints, State Police)")
+	foreign_lang    = models.NullBooleanField(verbose_name= u"Are you fluent in a foreign language?")
+	languages       = models.CharField(max_length=256, null=True, verbose_name= u"What languages?")
+	clearances      = models.NullBooleanField(verbose_name= u"Do you have clearances? (Child Abuse, FBI Fingerprints, State Police)")
 	prior_work      = models.CharField(max_length=1000, null=True)
-	ccec_ws         = models.NullBooleanField(verbose_name= "Have you previously worked through the CCEC?")
+	ccec_ws         = models.NullBooleanField(verbose_name= u"Have you previously worked through the CCEC?")
 	previous_site   = models.CharField(max_length=256, null=True, verbose_name= "If so, what site did you work at?")
-	remain_at_site  = models.NullBooleanField(verbose_name= "Would you like to remain at your current site?")
-	keep_schedule   = models.NullBooleanField(verbose_name= "Would you like to keep your same schedule?")
-	hear_about_ccec = models.CharField(max_length=256, null=True, verbose_name= "How did you hear about the CCEC?")
+	remain_at_site  = models.NullBooleanField(verbose_name= u"Would you like to remain at your current site?")
+	keep_schedule   = models.NullBooleanField(verbose_name= u"Would you like to keep your same schedule?")
+	hear_about_ccec = models.CharField(max_length=256, null=True, verbose_name= u"How did you hear about the CCEC?")
 	placement       = models.NullBooleanField() #will not be on the application, for office workers to mark that this student has been placed at a site
 	def __str__(self):
 		return self.personal_info.first_name + " " + self.personal_info.last_name + " (" + self.personal_info.email + ")" + " " + self.semester
@@ -68,10 +70,10 @@ class AppData(models.Model): #student application that will be filled out each s
 
 class SitePlacementRank(models.Model): #section of application that will rank where the student would like to be placed
 	app_data         = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
-	after_school     = models.IntegerField(null=True, verbose_name="After School" ,choices = RANKING)
+	after_school     = models.IntegerField(null=True, verbose_name=u"After School" ,choices = RANKING)
 	medical          = models.IntegerField(null=True, choices = RANKING)
-	community_center = models.IntegerField(null=True,verbose_name= "Community Center", choices = RANKING)
-	charity_org      = models.IntegerField(null=True, verbose_name= "Charity Organization", choices = RANKING)
+	community_center = models.IntegerField(null=True,verbose_name= u"Community Center", choices = RANKING)
+	charity_org      = models.IntegerField(null=True, verbose_name= u"Charity Organization", choices = RANKING)
 	hospice          = models.IntegerField(null=True, choices = RANKING)
 	other            = models.IntegerField(null=True, choices = RANKING)
 	def __str__(self):
