@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import PersonalInfoForm, AppDataForm, AppAvailabilityForm, SitePlacementRankForm
+from django.db.models import Q
 
 from django.shortcuts import redirect
 
@@ -16,7 +17,20 @@ def application_completed(request):
 	return render(request, "completed.html", {})
 
 def search(request):
-	pass
+	# template = 'pages/search.html'
+
+	query = request.GET.get('q')
+
+	if query:
+		results = AppAvailability.objects.filter(Q(day__icontains=query))
+	else:
+		results = AppAvailability.objects.all()
+
+	context = {
+		'items': results
+	}
+
+	return render(request, "search.html", context)
 
 def add(request):
 	pass
