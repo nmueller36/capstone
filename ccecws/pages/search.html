@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="lead">
+  <form action="{% url 'workstudy:search' %}" method="GET">
+    <input type="text" name="q" value="{{request.GET.q}}">
+    <button class="btn btn-primary" type="submit">Search</button>
+  </form>
+</div>
+{% for obj in items %}
+  {{obj.day}} {{obj.start_time}}-{{obj.end_time}}
+{% endfor %}
+
+{% endblock %}

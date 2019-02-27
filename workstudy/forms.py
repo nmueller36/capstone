@@ -53,6 +53,7 @@ class AppDataForm (forms.ModelForm):
         self.fields['ccec_ws'].required = True
         self.fields['remain_at_site'].required = True
         self.fields['keep_schedule'].required = True
+        self.fields['for_class'].required = True
     #    self.fields['placement'].required = True
 
 class SitePlacementRankForm (forms.ModelForm):
