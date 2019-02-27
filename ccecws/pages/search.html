@@ -9,8 +9,10 @@
     <button class="btn btn-primary" type="submit">Search</button>
   </form>
 </div>
-{% for obj in items %}
-  {{obj.day}} {{obj.start_time}}-{{obj.end_time}}
-{% endfor %}
+<div class="lead">
+  {% for obj in items %}
+    {{obj.day}} {{obj.start_time}}-{{obj.end_time}}
+  {% endfor %}
 
-{% endblock %}
+  {% endblock %}
+</div>
