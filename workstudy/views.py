@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import PersonalInfoForm, AppDataForm, AppAvailabilityForm, SitePlacementRankForm
 from django.db.models import Q
+from itertools import chain
 
 from django.shortcuts import redirect
 
@@ -16,15 +17,32 @@ def index(request):
 def application_completed(request):
 	return render(request, "completed.html", {})
 
+# This function is still in progress
 def search(request):
-	# template = 'pages/search.html'
 
 	query = request.GET.get('q')
 
 	if query:
-		results = AppAvailability.objects.filter(Q(day__icontains=query))
+		personalInfoResults = PersonalInfo.objects.filter(Q(student_id__icontains=query) |
+		Q(first_name__icontains=query) | Q(preferred_name__icontains=query) | Q(last_name__icontains=query) |
+		Q(email__icontains=query))
+		appDataResults = AppData.objects.filter(Q(semester__icontains=query) |
+		Q(phone_num__icontains=query) | Q(grad_month__icontains=query) | Q(grad_year__icontains=query) |
+		Q(what_class__icontains=query) | Q(semester__icontains=query) | Q(wanted_hours__icontains=query) |
+		Q(major__icontains=query) | Q(languages__icontains=query) | Q(prior_work__icontains=query) |
+		Q(previous_site__icontains=query) | Q(hear_about_ccec__icontains=query))
+		if personalInfoResults:
+			results = personalInfoResults
+		elif appDataResults:
+			# for app in appDataResults:
+			# 	n = PersonalInfo.objects.filter(student_id=app.personal_info)
+			# 	results = n
+			results = AppData.objects.filter(personal_info=personalInfoResults)
+			# results = self.personal_info
+		else:
+			results = ""
 	else:
-		results = AppAvailability.objects.all()
+		results = PersonalInfo.objects.all()
 
 	context = {
 		'items': results,

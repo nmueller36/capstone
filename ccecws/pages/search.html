@@ -3,16 +3,26 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
 <div class="lead">
+  <h1>Welcome, Admin!</h1>
+  <p>Search through workstudy applications here.</p>
+</div>
+<div class="lead form-inline">
   <form action="{% url 'workstudy:search' %}" method="GET">
-    <input type="text" name="q" value="{{request.GET.q}}">
+    <input class="form-control" type="text" name="q" value="{{request.GET.q}}">
     <button class="btn btn-primary" type="submit">Search</button>
   </form>
 </div>
 <div class="lead">
-  {% for obj in items %}
-    {{obj.day}} {{obj.start_time}}-{{obj.end_time}}
-  {% endfor %}
-
-  {% endblock %}
+  <p>Search results:</p>
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      {% for obj in items %}
+      <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
+
+{% endblock %}
