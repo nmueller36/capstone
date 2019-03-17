@@ -34,11 +34,12 @@ def search(request):
 		if personalInfoResults:
 			results = personalInfoResults
 		elif appDataResults:
-			# for app in appDataResults:
-			# 	n = PersonalInfo.objects.filter(student_id=app.personal_info)
-			# 	results = n
-			results = AppData.objects.filter(personal_info=personalInfoResults)
-			# results = self.personal_info
+			temp = PersonalInfo.objects.none()
+			for app in appDataResults:
+				person = PersonalInfo.objects.filter(Q(student_id__icontains = app.personal_info.student_id))
+				temp = person.union(temp)
+				# results = Q(person | temp)
+			results = temp
 		else:
 			results = ""
 	else:
