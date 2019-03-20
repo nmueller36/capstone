@@ -1,6 +1,8 @@
 from django import forms
-from .models import PersonalInfo, AppData, AppAvailability, SitePlacementRank
+from .models import PersonalInfo, AppData, AppAvailability, SitePlacementRank, SiteInfo
+from django.forms import modelformset_factory
 import datetime
+
 
 class PersonalInfoForm (forms.ModelForm):
     class Meta:
@@ -55,6 +57,26 @@ class AppDataForm (forms.ModelForm):
         self.fields['keep_schedule'].required = True
     #    self.fields['placement'].required = True
 
+AppAvailabilityModelFormset = modelformset_factory(
+    AppAvailability,
+    fields=('day', 'start_time', 'end_time',),
+
+    extra=1,
+    widgets={'day': forms.TextInput(attrs={
+        'class': 'form-control',
+
+    }),
+    'start_time' : forms.TextInput(attrs={
+
+    }),
+    'end_time' : forms.TextInput(attrs={
+
+    })
+    }
+
+    )
+
+
 class SitePlacementRankForm (forms.ModelForm):
     class Meta:
         model = SitePlacementRank
@@ -71,3 +93,39 @@ class AppAvailabilityForm (forms.ModelForm):
     class Meta:
         model = AppAvailability
         fields = '__all__'
+        exclude = ('app_data',)
+
+    def __init__(self, *args, **kwargs):
+
+        super(AppDataForm, self).__init__(*args, **kwargs)
+
+
+        self.fields['day'] = forms.ChoiceField(
+            choices = [	('sunday', 'Sunday'),
+            	('monday', 'Monday'),
+            	('tuesday', 'Tuesday'),
+            	('wednesday', 'Wednesday'),
+            	('thirsday', 'Thursday'),
+            	('friday', 'Friday'),
+            	('saturday' 'Saturday'),
+        ]
+        )
+
+#AppAvailabilityModelFormset = modelformset_factory(
+#AppAvailability,
+#fields=('day', 'start_time', 'end_time'),
+#extra=1,
+#widgets={'day': forms.TextInput(attrs={
+#    'class': 'form-control',
+#})
+#}
+#)
+
+class SiteInfoForm (forms.ModelForm):
+    class Meta:
+        model = SiteInfo
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+
+        super(SiteInfoForm, self).__init__(*args, **kwargs)

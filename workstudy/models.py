@@ -27,6 +27,18 @@ RANKING = (
 
 )
 
+DAYS = (
+	#choices for days of availibity
+	('sunday', 'Sunday'),
+	('monday', 'Monday'),
+	('tuesday', 'Tuesday'),
+	('wednesday', 'Wednesday'),
+	('thirsday', 'Thursday'),
+	('friday', 'Friday'),
+	('saturday' 'Saturday'),
+
+
+)
 
 
 # Create your models here.
@@ -70,21 +82,21 @@ class AppData(models.Model): #student application that will be filled out each s
 
 class SitePlacementRank(models.Model): #section of application that will rank where the student would like to be placed
 	app_data         = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
-	after_school     = models.CharField(max_length=1, null=True, verbose_name=u"After School" ,choices = RANKING)
-	medical          = models.CharField(max_length=1, null=True, choices = RANKING)
-	community_center = models.CharField(max_length=1, null=True,verbose_name= u"Community Center", choices = RANKING)
-	charity_org      = models.CharField(max_length=1, null=True, verbose_name= u"Charity Organization", choices = RANKING)
-	hospice          = models.CharField(max_length=1, null=True, choices = RANKING)
-	other            = models.CharField(max_length=1, null=True, choices = RANKING)
+	after_school     = models.CharField(max_length=10, null=True, verbose_name=u"After School" ,choices = RANKING)
+	medical          = models.CharField(max_length=10, null=True, choices = RANKING)
+	community_center = models.CharField(max_length=10, null=True,verbose_name= u"Community Center", choices = RANKING)
+	charity_org      = models.CharField(max_length=10, null=True, verbose_name= u"Charity Organization", choices = RANKING)
+	hospice          = models.CharField(max_length=10, null=True, choices = RANKING)
+	other            = models.CharField(max_length=10, null=True, choices = RANKING)
 	def __str__(self):
 		return self.personal_info.first_name + " " + self.personal_info.last_name + " (" + self.personal_info.email + ")" + " " + self.semester
 
 
 class AppAvailability(models.Model): #where student will enter their availility to work on application
 	app_data   = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
-	day        = models.CharField(max_length=256, null=True)
-	start_time = models.IntegerField(null=True)
-	end_time   = models.IntegerField(null=True)
+	day        = models.CharField(max_length=256, null=True, verbose_name=u"Day" )#choices=DAYS
+	start_time = models.IntegerField(null=True, verbose_name=u"Start Time")
+	end_time   = models.IntegerField(null=True, verbose_name=u"End Time")
 
 
 class SiteInfo(models.Model): #important information regarding the sites that can take work study students

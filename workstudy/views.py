@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import PersonalInfoForm, AppDataForm, AppAvailabilityForm, SitePlacementRankForm
+from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityModelFormset
 from django.db.models import Q
 from itertools import chain
 
@@ -55,12 +55,15 @@ def add(request):
 	pass
 
 def application(request):
+	#template_name = 'pages/create_normal.html'
 	if request.method == "POST":
 		personal_info_form = PersonalInfoForm(request.POST)
 		app_data_form = AppDataForm(request.POST)
 		site_placement_rank_form = SitePlacementRankForm(request.POST)
+		app_availbility_modelformset = AppAvailabilityModelFormset(request.POST) #, request.FILES, prefix = 'availility')
+		#formset = AuthorFormset(request.POST)
 
-		if personal_info_form.is_valid() and app_data_form.is_valid() and site_placement_rank_form.is_valid():
+		if personal_info_form.is_valid() and app_data_form.is_valid() and site_placement_rank_form.is_valid() and app_availbility_modelformset.is_vaild():
 			personal_info_instance = personal_info_form.save(commit=False)
 			app_data_instance = app_data_form.save(commit=False)
 			site_placement_rank_instance = site_placement_rank_form.save(commit=False)
@@ -71,7 +74,14 @@ def application(request):
 			personal_info_instance.save()
 			app_data_instance.save()
 			site_placement_rank_instance.save()
-
+			for form in app_availbility_modelformset:
+				# so that `book` instance can be attached.
+				app_availbility_instance = app_availbility_modelformset.save(commit=False)
+				app_availbility_instance.app_data = app_data_instance
+				app_availbility_instance.day = day
+				app_availbility_instance.start_time = start_time
+				app_availbility_instance.end_time = end_time
+				app_availbility_instance.save()
 			# return redirect('workstudy:application-details', pk=app_data_instance.pk)
 			return redirect('workstudy:application-completed')
 		# if the form validation failed, for now just show the application form again and show the error
@@ -84,7 +94,32 @@ def application(request):
 		personal_info_form = PersonalInfoForm()
 		app_data_form = AppDataForm()
 		site_placement_rank_form = SitePlacementRankForm()
+		app_availbility_modelformset = AppAvailabilityModelFormset(queryset=AppAvailability.objects.none())
 		context['personal_info_form'] = personal_info_form
 		context['app_data_form'] = app_data_form
 		context['site_placement_rank_form'] = site_placement_rank_form
+		context['app_availbility_modelformset'] = app_availbility_modelformset
 		return render(request, 'application.html', context)
+
+
+def site_info_added (request):
+	return render(request, "new_site.html", {})
+
+def site_information (request):
+	if request.method == "POST":
+		site_info_form = SiteInfoForm(request.POST)
+
+		if site_info_form.is_valid():
+			site_info_instance = site_info_form.save(commit=False)
+			site_info_instance.save()
+			return redirect('workstudy:new_site')
+		else:
+			messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
+			return redirect('workstudy:add_site_info')
+
+	else:
+		# show the forms
+		context = {}
+		site_info_form = SiteInfoForm()
+		context['site_info_form'] = site_info_form
+		return render(request, 'add_site_info.html', context)
