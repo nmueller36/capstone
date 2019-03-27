@@ -8,83 +8,68 @@
         {{ personal_info_form|crispy }}
         {{ app_data_form|crispy }}
         <p> Please numerically rank your choices for a site placement in order of preference, with 1 being your ideal placement.<p>
-          {{site_placement_rank_form|crispy}}
-          {{ app_availbility_modelformset.management_form}}
-          {% for form in app_availbility_modelformset%}
-            {% crispy form%}
-          <div class="input-group">
-          <label>{{form.day.label}}</label>
-            {{form.day}}
-            <label>{{form.start_time.label}}</label>
-            {{form.start_time}}
-            <label>{{form.end_time.label}}</label>
-            {{form.end_time}}
-            <div class="input-group-append">
-                <button class="btn btn-success add-form-row">+</button>
-            </div>
-          {% endfor %}
-        <button class="btn btn-primary" type="submit">Submit</button>
+           {{ site_placement_rank_form|crispy }}
+           <!-- <div class="form-group" id="availability-container"> -->
+           <div class="form-group">
+             <a href="javascript:;" id="add-new-day" >Add Another Day</a>
+           </div>
+           <div class="table-responsive">
+           <table id="availability-container" class="table">
+             <tr>
+              <td>
+               <label>{{app_availability_form.day.label}}</label>
+                <input name="days[1][day]">
+              </td>
+              <td>
+               <!-- {{app_availability_form.day}} -->
+               <label>{{app_availability_form.start_time.label}}</label>
+               <input name="days[1][start_time]">
+              </td>
+              <td>
+               <!-- {{app_availability_form.start_time}} -->
+               <label>{{app_availability_form.end_time.label}}</label>
+               <input name="days[1][end_time]">
+              </td>
+             </tr>
+               <!-- {{app_availability_form.end_time}} -->
+               <!-- <div class="input-group-append"> -->
+           </table>
+           </div>
+
+              <!-- <button class="btn btn-success add-form-row">+</button> -->
+           <div class="form-group">
+            <button class="btn btn-primary" type="submit">Submit</button>
+           </div>
     </form>
 </div>
 {% endblock %}
 
 {% block customjs %}
-<script>
-  <script type='text/javascript'>
-  function updateElementIndex(el, prefix, ndx) {
-      var id_regex = new RegExp('(' + prefix + '-\\d+)');
-      var replacement = prefix + '-' + ndx;
-      if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
-      if (el.id) el.id = el.id.replace(id_regex, replacement);
-      if (el.day) el.day = el.day.replace(id_regex, replacement);
-      if (el.start_time) el.start_time = el.start_time.replace(id_regex, replacement);
-      if (el.end_time) el.end_time = el.end_time.replace(id_regex, replacement);
-  }
-  function cloneMore(selector, prefix) {
-      var newElement = $(selector).clone(true);
-      var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-      newElement.find(':input').each(function() {
-          var day = $(this).attr('day').replace('-' + (total-1) + '-', '-' + total + '-');
-          var start_time = $(this).attr('start_time').replace('-' + (total-1) + '-', '-' + total + '-');
-          var end_time = $(this).attr('end_time').replace('-' + (total-1) + '-', '-' + total + '-');
-          var id = 'id_';
-          $(this).attr({'day':day, 'start_time': start_time, 'end_time' : end_time, 'id' : id}).val('').removeAttr('checked');
-      });
-      total++;
-      $('#id_' + prefix + '-TOTAL_FORMS').val(total);
-      $(selector).after(newElement);
-      var conditionRow = $('.form-row:not(:last)');
-      conditionRow.find('.btn.add-form-row')
-      .removeClass('btn-success').addClass('btn-danger')
-      .removeClass('add-form-row').addClass('remove-form-row')
-      .html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>');
-      return false;
-  }
-  function deleteForm(prefix, btn) {
-      var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-      if (total > 1){
-          btn.closest('.form-row').remove();
-          var forms = $('.form-row');
-          $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-          for (var i=0, formCount=forms.length; i<formCount; i++) {
-              $(forms.get(i)).find(':input').each(function() {
-                  updateElementIndex(this, prefix, i);
-              });
-          }
-      }
-      return false;
-  }
-  $(document).on('click', '.add-form-row', function(e){
-      e.preventDefault();
-      cloneMore('.form-row:last', 'form');
-      return false;
-  });
-  $(document).on('click', '.remove-form-row', function(e){
-      e.preventDefault();
-      deleteForm('form', $(this));
-      return false;
-  });
-  </script>
+<<script type="text/javascript">
 
+let i = 2;
+document.getElementById('add-new-day').onclick = function () {
+  let template = `
+          <td>
+            <label>Day</label><br>
+            <input name="days[${i}][day]">
+          </td>
+          <td>
+            <label>Start Time</label><br>
+            <input name="days[${i}][start_time]">
+          </td>
+          <td>
+            <label>End Time</label><br>
+            <input name="days[${i}][end_time]">
+          </td>
+            `;
+
+    let container = document.getElementById('availability-container');
+    let div = document.createElement('tr');
+    div.innerHTML = template;
+    container.insertBefore(div, container.firstChild);
+
+    i++;
+}
 </script>
 {% endblock %}

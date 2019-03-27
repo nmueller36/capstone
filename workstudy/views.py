@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityModelFormset
+from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityForm
 from django.db.models import Q
 from itertools import chain
 
@@ -94,11 +94,11 @@ def application(request):
 		personal_info_form = PersonalInfoForm()
 		app_data_form = AppDataForm()
 		site_placement_rank_form = SitePlacementRankForm()
-		app_availbility_modelformset = AppAvailabilityModelFormset(queryset=AppAvailability.objects.none())
+		app_availability_form = AppAvailabilityForm()
 		context['personal_info_form'] = personal_info_form
 		context['app_data_form'] = app_data_form
 		context['site_placement_rank_form'] = site_placement_rank_form
-		context['app_availbility_modelformset'] = app_availbility_modelformset
+		context['app_availability_form'] = app_availability_form
 		return render(request, 'application.html', context)
 
 

@@ -36,7 +36,7 @@ class AppDataForm (forms.ModelForm):
                 ("spring " + str(current_year), "Spring " + str(current_year)),
                 ("fall " + str(current_year), "Fall " + str(current_year)),
                 ("spring " + str(current_year + 1), "Spring " + str(current_year + 1))
-        ]
+            ]
         )
 
         self.fields['grad_year'].label = "Graduation Year"
@@ -57,7 +57,7 @@ class AppDataForm (forms.ModelForm):
         self.fields['keep_schedule'].required = True
     #    self.fields['placement'].required = True
 
-AppAvailabilityModelFormset = modelformset_factory(
+'''AppAvailabilityModelFormset = modelformset_factory(
     AppAvailability,
     fields=('day', 'start_time', 'end_time',),
 
@@ -74,7 +74,7 @@ AppAvailabilityModelFormset = modelformset_factory(
     })
     }
 
-    )
+    )'''
 
 
 class SitePlacementRankForm (forms.ModelForm):
@@ -87,8 +87,6 @@ class SitePlacementRankForm (forms.ModelForm):
         # calling the mothership to initialize all its variables before updating the form
         super(SitePlacementRankForm, self).__init__(*args, **kwargs)
 
-
-
 class AppAvailabilityForm (forms.ModelForm):
     class Meta:
         model = AppAvailability
@@ -96,19 +94,13 @@ class AppAvailabilityForm (forms.ModelForm):
         exclude = ('app_data',)
 
     def __init__(self, *args, **kwargs):
-
-        super(AppDataForm, self).__init__(*args, **kwargs)
-
+        super(AppAvailabilityForm, self).__init__(*args, **kwargs)
 
         self.fields['day'] = forms.ChoiceField(
-            choices = [	('sunday', 'Sunday'),
-            	('monday', 'Monday'),
-            	('tuesday', 'Tuesday'),
-            	('wednesday', 'Wednesday'),
-            	('thirsday', 'Thursday'),
-            	('friday', 'Friday'),
-            	('saturday' 'Saturday'),
-        ]
+        	choices = [ ('sunday', 'Sunday'),
+        		('monday', 'Monday'),
+                ('tuesday', 'Tuesday'),
+        	]
         )
 
 #AppAvailabilityModelFormset = modelformset_factory(
