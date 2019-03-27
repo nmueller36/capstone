@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityModelFormset
 from django.db.models import Q
 from itertools import chain
+import datetime
 
 from django.shortcuts import redirect
 
@@ -20,7 +21,13 @@ def application_completed(request):
 # This function is still in progress
 def search(request):
 
+	current_year = datetime.datetime.now().year
+	choices = [(year, year) for year in range(current_year, current_year + 8)]
+
 	query = request.GET.get('q')
+	query2 = request.GET.get('r')
+	query3 = request.GET.get('s')
+	query4 = request.GET.get('t')
 
 	if query:
 		personalInfoResults = PersonalInfo.objects.filter(Q(student_id__icontains=query) |
@@ -44,9 +51,12 @@ def search(request):
 			results = ""
 	else:
 		results = PersonalInfo.objects.all()
+	if query2:
+		pass
 
 	context = {
 		'items': results,
+		'years': choices
 	}
 
 	return render(request, "search.html", context)

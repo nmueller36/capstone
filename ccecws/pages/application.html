@@ -10,9 +10,9 @@
         <p> Please numerically rank your choices for a site placement in order of preference, with 1 being your ideal placement.<p>
           {{site_placement_rank_form|crispy}}
           {{ app_availbility_modelformset.management_form}}
-          {% for form in app_availbility_modelformset%}
-            {% crispy form%}
-          <div class="input-group">
+          <!-- {% for form in app_availbility_modelformset%}
+            {% crispy form%} -->
+          <!-- <div class="input-group">
           <label>{{form.day.label}}</label>
             {{form.day}}
             <label>{{form.start_time.label}}</label>
@@ -21,8 +21,8 @@
             {{form.end_time}}
             <div class="input-group-append">
                 <button class="btn btn-success add-form-row">+</button>
-            </div>
-          {% endfor %}
+            </div> -->
+          <!-- {% endfor %} -->
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
 </div>
