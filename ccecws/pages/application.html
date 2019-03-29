@@ -8,25 +8,8 @@
         {{ personal_info_form|crispy }}
         {{ app_data_form|crispy }}
         <p> Please numerically rank your choices for a site placement in order of preference, with 1 being your ideal placement.<p>
-<<<<<<< HEAD
           {{site_placement_rank_form|crispy}}
-          {{ app_availbility_modelformset.management_form}}
-          <!-- {% for form in app_availbility_modelformset%}
-            {% crispy form%} -->
-          <!-- <div class="input-group">
-          <label>{{form.day.label}}</label>
-            {{form.day}}
-            <label>{{form.start_time.label}}</label>
-            {{form.start_time}}
-            <label>{{form.end_time.label}}</label>
-            {{form.end_time}}
-            <div class="input-group-append">
-                <button class="btn btn-success add-form-row">+</button>
-            </div> -->
-          <!-- {% endfor %} -->
-        <button class="btn btn-primary" type="submit">Submit</button>
-=======
-           {{ site_placement_rank_form|crispy }}
+
            <!-- <div class="form-group" id="availability-container"> -->
            <div class="form-group">
              <a href="javascript:;" id="add-new-day" >Add Another Day</a>
@@ -58,7 +41,6 @@
            <div class="form-group">
             <button class="btn btn-primary" type="submit">Submit</button>
            </div>
->>>>>>> 1fa62876f9f0073d7e134c25669e6828e750735e
     </form>
 </div>
 {% endblock %}

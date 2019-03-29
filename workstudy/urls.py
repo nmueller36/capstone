@@ -9,5 +9,5 @@ urlpatterns = [
 	url(r'^application/$', views.application, name="application"),
 	url(r'^application/completed/$', views.application_completed, name="application-completed"),
 	url(r'^add_site_info/$', views.site_information, name="add_site_info"),
-	url(r'^results/$', views.search, name="search")
+	url(r'^student_applications/$', views.search, name="search")
 ]

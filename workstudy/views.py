@@ -20,42 +20,118 @@ def application_completed(request):
 
 # This function is still in progress
 def search(request):
-
+	# Calculates the current and next two semesters to populate search criteria
 	current_year = datetime.datetime.now().year
-	choices = [(year, year) for year in range(current_year, current_year + 8)]
+	choices = [
+		("Spring " + str(current_year)),
+		("Fall " + str(current_year)),
+		("Spring " + str(current_year + 1))
+	]
 
-	query = request.GET.get('q')
-	query2 = request.GET.get('r')
-	query3 = request.GET.get('s')
-	query4 = request.GET.get('t')
+	general = request.GET.get('a')
+	name = request.GET.get('q')
+	email = request.GET.get('r')
+	semester = request.GET.get('s')
+	driver = request.GET.get('t')
+	day = request.GET.get('u')
+	starttime = request.GET.get('v')
+	endtime = request.GET.get('w')
 
-	if query:
-		personalInfoResults = PersonalInfo.objects.filter(Q(student_id__icontains=query) |
-		Q(first_name__icontains=query) | Q(preferred_name__icontains=query) | Q(last_name__icontains=query) |
-		Q(email__icontains=query))
-		appDataResults = AppData.objects.filter(Q(semester__icontains=query) |
-		Q(phone_num__icontains=query) | Q(grad_month__icontains=query) | Q(grad_year__icontains=query) |
-		Q(what_class__icontains=query) | Q(semester__icontains=query) | Q(wanted_hours__icontains=query) |
-		Q(major__icontains=query) | Q(languages__icontains=query) | Q(prior_work__icontains=query) |
-		Q(previous_site__icontains=query) | Q(hear_about_ccec__icontains=query))
-		if personalInfoResults:
-			results = personalInfoResults
-		elif appDataResults:
+	# Initialize results to dispaly all items in database
+	personalInfoResults = PersonalInfo.objects.none()
+	appDataResults = PersonalInfo.objects.none()
+	appAvailabilityResults = PersonalInfo.objects.none()
+
+	if general:
+		personalInfoSearch =  PersonalInfo.objects.filter(Q(student_id__icontains=general) |
+		Q(first_name__icontains=general) | Q(preferred_name__icontains=general) | Q(last_name__icontains=general) |
+		Q(email__icontains=general))
+		appDataSearch = AppData.objects.filter(Q(semester__icontains=general) |
+		Q(phone_num__icontains=general) | Q(grad_month__icontains=general) | Q(grad_year__icontains=general) |
+		Q(what_class__icontains=general) | Q(wanted_hours__icontains=general) |
+		Q(major__icontains=general) | Q(languages__icontains=general) | Q(prior_work__icontains=general) |
+		Q(previous_site__icontains=general) | Q(hear_about_ccec__icontains=general))
+		appAvailabilitySearch = AppAvailability.objects.filter(Q(day__icontains=general) | Q(start_time__icontains=general) |
+		Q(end_time__icontains=general))
+
+		if personalInfoSearch:
+			personalInfoResults = personalInfoSearch
+		elif appDataSearch:
 			temp = PersonalInfo.objects.none()
-			for app in appDataResults:
+			for app in appDataSearch:
 				person = PersonalInfo.objects.filter(Q(student_id__icontains = app.personal_info.student_id))
 				temp = person.union(temp)
-				# results = Q(person | temp)
-			results = temp
-		else:
-			results = ""
+			appDataResults = temp
+		elif appAvailabilitySearch:
+			temp = PersonalInfo.objects.none()
+			for app in appAvailabilitySearch:
+				person = PersonalInfo.objects.filter(Q(student_id__icontains = app.personal_info.student_id))
+				temp = person.union(temp)
+			appAvailabilityResults = temp
 	else:
+		# Advanced search
 		results = PersonalInfo.objects.all()
-	if query2:
-		pass
+		nameSearch = PersonalInfo.objects.none()
+		emailSearch = PersonalInfo.objects.none()
+		semesterSearch = PersonalInfo.objects.none()
+
+		if name:
+			nameSearch = results.filter(Q(first_name__icontains=name) | Q(preferred_name__icontains=name) |
+			Q(last_name__icontains=name))
+			results = nameSearch
+		if email:
+			emailSearch = nameSearch.filter(Q(email__icontains=email))
+			results = emailSearch
+		if semester:
+			# This stop working here
+			semesterData = AppData.objects.filter(Q(semester__icontains=general))
+			semesterSearch = PersonalInfo.objects.filter(Q(student_id__icontains = SemesterData.personal_info.student_id))
+			results = semesterSearch
+		if not driver is None:
+			pass
+		if day:
+			pass
+		if starttime:
+			pass
+		if endtime:
+			pass
+
+		personalInfoResults = results
+
+	# This if statement checks to see if the checkbox is checked
+	# if not driver is None:
+	# 	print ("Query 4")
+	# else:
+	# 	pass
+
+	# if query:
+	# 	personalInfoResults = PersonalInfo.objects.filter(Q(student_id__icontains=query) |
+	# 	Q(first_name__icontains=query) | Q(preferred_name__icontains=query) | Q(last_name__icontains=query) |
+	# 	Q(email__icontains=query))
+	# 	appDataResults = AppData.objects.filter(Q(semester__icontains=query) |
+	# 	Q(phone_num__icontains=query) | Q(grad_month__icontains=query) | Q(grad_year__icontains=query) |
+	# 	Q(what_class__icontains=query) | Q(semester__icontains=query) | Q(wanted_hours__icontains=query) |
+	# 	Q(major__icontains=query) | Q(languages__icontains=query) | Q(prior_work__icontains=query) |
+	# 	Q(previous_site__icontains=query) | Q(hear_about_ccec__icontains=query))
+	# 	if personalInfoResults:
+	# 		results = personalInfoResults
+	# 	elif appDataResults:
+	# 		temp = PersonalInfo.objects.none()
+	# 		for app in appDataResults:
+	# 			person = PersonalInfo.objects.filter(Q(student_id__icontains = app.personal_info.student_id))
+	# 			temp = person.union(temp)
+	# 		results = temp
+	# 	else:
+	# 		results = ""
+	# else:
+	# 	results = PersonalInfo.objects.all()
+	# if query2:
+	# 	pass
 
 	context = {
-		'items': results,
+		'PerInfo': personalInfoResults,
+		'AppData': appDataResults,
+		'AppAvail': appAvailabilityResults,
 		'years': choices
 	}
 
