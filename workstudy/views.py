@@ -18,6 +18,9 @@ def index(request):
 def application_completed(request):
 	return render(request, "completed.html", {})
 
+def new_site_completed(request):
+	return render(request, "new_site.html", {})
+
 # This function is still in progress
 def search(request):
 
@@ -63,6 +66,9 @@ def search(request):
 
 def add(request):
 	pass
+
+def placement(request):
+	return render(request, "placement.html", {})
 
 def application(request):
 	#template_name = 'pages/create_normal.html'
