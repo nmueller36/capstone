@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 # import tables from the database
-from workstudy.models import PersonalInfo, AppData, AppAvailability,StudentPlacement, StudentSchedule, SiteInfo, SiteAvailability
+from workstudy.models import PersonalInfo, AppData, SitePlacementRank, AppAvailability, SiteAvailability, SiteInfo, StudentPlacement, StudentSchedule  
 
 def index(request):
 	return render(request, "index.html", {})
@@ -30,6 +30,7 @@ def search(request):
 		("Fall " + str(current_year)),
 		("Spring " + str(current_year + 1))
 	]
+	whichSearch = 0
 
 	general = request.GET.get('a')
 	name = request.GET.get('q')
@@ -46,6 +47,7 @@ def search(request):
 	appAvailabilityResults = PersonalInfo.objects.none()
 
 	if general:
+		whichSearch = 1
 		personalInfoSearch =  PersonalInfo.objects.filter(Q(student_id__icontains=general) |
 		Q(first_name__icontains=general) | Q(preferred_name__icontains=general) | Q(last_name__icontains=general) |
 		Q(email__icontains=general))
@@ -84,10 +86,12 @@ def search(request):
 			nameSearch = results.filter(Q(first_name__icontains=name) | Q(preferred_name__icontains=name) |
 			Q(last_name__icontains=name))
 			results = nameSearch
+			whichSearch = 2
 		if email:
 			print("email")
 			emailSearch = results.filter(Q(email__icontains=email))
 			results = emailSearch
+			whichSearch = 2
 		if semester:
 			print("semester")
 			semesterData = AppData.objects.filter(Q(semester__icontains=semester))
@@ -96,6 +100,7 @@ def search(request):
 				semesterSearch = results.filter(Q(student_id = sem.personal_info.student_id))
 				temp = semesterSearch.union(temp)
 			results = temp
+			whichSearch = 2
 		if not driver is None:
 			print("driver")
 			driverData = AppData.objects.filter(Q(car=True) & Q(carpool=True))
@@ -104,6 +109,7 @@ def search(request):
 				driverSearch = results.filter(Q(student_id = driver.personal_info.student_id))
 				temp = driverSearch.union(temp)
 			results = temp
+			whichSearch = 2
 		if day:
 			print("day")
 			dayData = AppAvailability.objects.filter(Q(day__icontains=day))
@@ -113,6 +119,7 @@ def search(request):
 				print(daySearch)
 				temp = daySearch.union(temp)
 			results = temp
+			whichSearch = 2
 		if starttime:
 			print("start time")
 			startData = AppAvailability.objects.filter(Q(start_time__icontains=starttime))
@@ -121,6 +128,7 @@ def search(request):
 				startSearch = results.filter(Q(student_id = start.app_data.personal_info.student_id))
 				temp = startSearch.union(temp)
 			results = temp
+			whichSearch = 2
 		if endtime:
 			print("end time")
 			endData = AppAvailability.objects.filter(Q(end_time__icontains=endtime))
@@ -129,17 +137,28 @@ def search(request):
 				endSearch = results.filter(Q(student_id = end.app_data.personal_info.student_id))
 				temp = endSearch.union(temp)
 			results = temp
+			whichSearch = 2
 
 		personalInfoResults = results
+		print(whichSearch)
 
 	context = {
 		'PerInfo': personalInfoResults,
 		'AppData': appDataResults,
 		'AppAvail': appAvailabilityResults,
-		'years': choices
+		'years': choices,
+		'searchType': whichSearch
 	}
 
 	return render(request, "search.html", context)
+
+def student_placement_search(request):
+	context = {}
+	return render(request, "student_placement_search.html", context)
+
+def site_info_search(request):
+	context = {}
+	return render(request, "site_info_search.html", context)
 
 def add(request):
 	pass

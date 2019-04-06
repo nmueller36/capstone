@@ -42,9 +42,9 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="{% url 'workstudy:search' %}">Student Applications</a>
-                  <a class="dropdown-item" href="#">Student Placement</a>
+                  <a class="dropdown-item" href="{% url 'workstudy:student_placement_search' %}">Student Placement</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Site Info</a>
+                  <a class="dropdown-item" href="{% url 'workstudy:site_info_search' %}">Site Info</a>
                 </div>
               </li>
             </ul>
