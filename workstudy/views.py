@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 # import tables from the database
-from workstudy.models import PersonalInfo, AppData, SitePlacementRank, AppAvailability, SiteAvailability, SiteInfo, StudentPlacement, StudentSchedule  
+from workstudy.models import PersonalInfo, AppData, SitePlacementRank, AppAvailability, SiteAvailability, SiteInfo, StudentPlacement, StudentSchedule
 
 def index(request):
 	return render(request, "index.html", {})
@@ -41,7 +41,7 @@ def search(request):
 	starttime = request.GET.get('v')
 	endtime = request.GET.get('w')
 
-	# Initialize results to dispaly all items in database
+	# Initialize results to display all items in database
 	personalInfoResults = PersonalInfo.objects.none()
 	appDataResults = PersonalInfo.objects.none()
 	appAvailabilityResults = PersonalInfo.objects.none()
