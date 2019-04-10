@@ -25,32 +25,10 @@ def new_site_completed(request):
 def search(request):
 	# Calculates the current and next two semesters to populate search criteria
 	current_year = datetime.datetime.now().year
-<<<<<<< HEAD
-	choices = [year for year in range(current_year, current_year + 8)]
-
-	query = request.GET.get('q')
-	query2 = request.GET.get('r')
-	query3 = request.GET.get('s')
-	query4 = request.GET.get('t')
-
-	if query:
-		personalInfoResults = PersonalInfo.objects.filter(Q(student_id__icontains=query) |
-		Q(first_name__icontains=query) | Q(preferred_name__icontains=query) | Q(last_name__icontains=query) |
-		Q(email__icontains=query))
-		appDataResults = AppData.objects.filter(Q(semester__icontains=query) |
-		Q(phone_num__icontains=query) | Q(grad_month__icontains=query) | Q(grad_year__icontains=query) |
-		Q(what_class__icontains=query) | Q(semester__icontains=query) | Q(wanted_hours__icontains=query) |
-		Q(major__icontains=query) | Q(languages__icontains=query) | Q(prior_work__icontains=query) |
-		Q(previous_site__icontains=query) | Q(hear_about_ccec__icontains=query))
-		if personalInfoResults:
-			results = personalInfoResults
-		elif appDataResults:
-=======
 	choices = [
 		("Spring " + str(current_year)),
 		("Fall " + str(current_year)),
-		("Spring " + str(current_year + 1))
-	]
+		("Spring " + str(current_year + 1))]
 	whichSearch = 0
 
 	general = request.GET.get('a')
@@ -67,7 +45,7 @@ def search(request):
 	appDataResults = PersonalInfo.objects.none()
 	appAvailabilityResults = PersonalInfo.objects.none()
 
-	if general:
+	if general != None and general != "":
 		whichSearch = 1
 		personalInfoSearch =  PersonalInfo.objects.filter(Q(student_id__icontains=general) |
 		Q(first_name__icontains=general) | Q(preferred_name__icontains=general) | Q(last_name__icontains=general) |
@@ -83,7 +61,6 @@ def search(request):
 		if personalInfoSearch:
 			personalInfoResults = personalInfoSearch
 		elif appDataSearch:
->>>>>>> 0bcc165be690726d5d99557f41a444665d3e0231
 			temp = PersonalInfo.objects.none()
 			for app in appDataSearch:
 				person = PersonalInfo.objects.filter(Q(student_id = app.personal_info.student_id))
@@ -125,7 +102,7 @@ def search(request):
 			whichSearch = 2
 		if not driver is None:
 			print("driver")
-			driverData = AppData.objects.filter(Q(car=True) & Q(carpool=True))
+			driverData = AppData.objects.filter(Q(car=True))
 			temp = PersonalInfo.objects.none()
 			for driver in driverData:
 				driverSearch = results.filter(Q(student_id = driver.personal_info.student_id))
@@ -216,8 +193,9 @@ def application(request):
 			site_placement_rank_instance.save()
 			# messages.info(request, str(app_avail_days))
 			for i in range(len(app_avail_days)):
-				user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
-				user_availability.save()
+				if app_avail_days[i] and app_avail_start_time[i] and app_avail_end_time[i]:
+					user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
+					user_availability.save()
 			return redirect('workstudy:application-completed')
 		# if the form validation failed, for now just show the application form again and show the error
 		else:

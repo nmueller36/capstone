@@ -97,6 +97,8 @@ class AppAvailability(models.Model): #where student will enter their availility 
 	day        = models.CharField(max_length=256, null=True, verbose_name=u"Day" )#choices=DAYS
 	start_time = models.TimeField(auto_now=False, null=True, verbose_name=u"Start Time")
 	end_time   = models.TimeField(auto_now=False, null=True, verbose_name=u"End Time")
+	def __str__(self):
+		return self.app_data.personal_info.first_name + " " + self.app_data.personal_info.last_name + " " + self.day + " from " + str(self.start_time) + " to " + str(self.end_time)
 
 
 class SiteAvailability(models.Model): # dates and times when sites can take work study students
