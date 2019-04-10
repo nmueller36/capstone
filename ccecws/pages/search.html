@@ -5,10 +5,41 @@
 {% block content %}
 
 <div class="lead">
-  <h1>Welcome, Admin!</h1>
-  <p>Search through workstudy records here.</p>
-  <h2>Student Info</h2>
-  <p>Search through student applications.</p>
+  <h1>Student Applications</h1>
+  <p>Search through student applications here. These students have not yet been placed at a site.</p>
+  <hr>
+  <h3>General Search</h3>
+  <p>Search for keywords across all student application data.</p>
+  <div class="lead form-inline">
+    <form action="{% url 'workstudy:search' %}" method="GET">
+      <div class="form-group form-inline">
+        <input class="form-control mb-2 mr-sm-2" type="text" name="a" id="a" value="{{request.GET.a}}">
+        <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+  <hr>
+  {% if searchType == 1 %}
+  <div class="lead">
+    <p>Search results:</p>
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        {% for obj in PerInfo %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+        {% for obj in AppData %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+        {% for obj in AppAvail %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <hr>
+  {% endif %}
+  <h3>Advanced Search</h3>
+  <p>Filter search by fields.</p>
   <div class="lead form-inline">
     <form action="{% url 'workstudy:search' %}" method="GET">
       <div class="form-group">
@@ -19,33 +50,49 @@
         <label for="r" class="mr-sm-2">Email: </label>
         <input class="form-control mb-2 mr-sm-2" type="text" name="r" id="r" value="{{request.GET.r}}">
       </div>
-      <!-- Figure out how to use choices from models -->
       <div class="form-group">
-        <label for="s">Semester</label>
+        <label for="s">Semester: </label>
         <select class="form-control mb-2 mr-sm-2" name="s" id="s" value="{{request.GET.s}}">
-          <option>Spring</option>
-          <option>Fall</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="t">Year</label>
-        <select class="form-control mb-2 mr-sm-2" name="t" id="t" value="{{request.GET.t}}">
+          <option disabled selected value>-- select an option -- </option>
           {% for year in years %}
           <option>{{year}}</option>
           {% endfor %}
         </select>
       </div>
       <div class="form-group checkbox">
-        <label><input class="mb-2 mr-sm-2" type="checkbox" name="u" id="u" value="{{request.GET.u}}">Driver</label>
+        <input class="mb-2 mr-sm-2" type="checkbox" name="t" id="t" value="{{request.GET.t}}">Driver
       </div>
-
+      <div class="form-group">
+        <label for="u">Day: </label>
+        <select class="form-control mb-2 mr-sm-2" name="u" id="u" value="{{request.GET.u}}">
+          <option disabled selected value>-- select an option -- </option>
+          <option>Monday</option>
+          <option>Tuesday</option>
+          <option>Wednesday</option>
+          <option>Thursday</option>
+          <option>Friday</option>
+          <option>Saturday</option>
+          <option>Sunday</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="v" class="mr-sm-2">Start time: </label>
+        <input class="form-control mb-2 mr-sm-2" type="text" name="v" id="v" value="{{request.GET.v}}">
+      </div>
+      <div class="form-group">
+        <label for="w" class="mr-sm-2">End time: </label>
+        <input class="form-control mb-2 mr-sm-2" type="text" name="w" id="w" value="{{request.GET.w}}">
+      </div>
       <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Search</button>
     </form>
   </div>
+  {% if searchType == 2 %}
+  <hr>
   <div class="lead">
     <p>Search results:</p>
     <div class="card">
       <ul class="list-group list-group-flush">
+<<<<<<< HEAD
         {% for obj in items %}
         <!-- <div class="container"> -->
           <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</button>
@@ -57,8 +104,21 @@
           </div>
           {% endfor %}
         </ul>
+=======
+        {% for obj in PerInfo %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+        {% for obj in AppData %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+        {% for obj in AppAvail %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+      </ul>
+>>>>>>> 0bcc165be690726d5d99557f41a444665d3e0231
     </div>
   </div>
+  {% endif %}
 </div>
 
 {% endblock %}

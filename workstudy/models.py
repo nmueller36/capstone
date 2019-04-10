@@ -99,6 +99,12 @@ class AppAvailability(models.Model): #where student will enter their availility 
 	end_time   = models.TimeField(auto_now=False, null=True, verbose_name=u"End Time")
 
 
+class SiteAvailability(models.Model): # dates and times when sites can take work study students
+	#site_info  = models.ForeignKey(SiteInfo, on_delete=models.CASCADE, blank=True, null=True)
+	day        = models.CharField(max_length=256, null=True)
+	start_time = models.IntegerField(null=True)
+	end_time   = models.IntegerField(null=True)
+
 class SiteInfo(models.Model): #important information regarding the sites that can take work study students
 	site_name   = models.CharField(max_length=256, primary_key = True)
 	address     = models.CharField(max_length=256, null=True)
@@ -111,6 +117,7 @@ class SiteInfo(models.Model): #important information regarding the sites that ca
 	second_contact_number = models.CharField(max_length=256, null=True)
 	clearances_needed    = models.CharField(max_length=256, null=True)
 	comments             = models.CharField(max_length=10000, null=True)
+	#site_availability = models.ForeignKey(SiteAvailability, on_delete=models.CASCADE, blank = True, null = True)
 
 
 class StudentPlacement(models.Model): #once a ccec worker finds a placement for the student, it will be added to this table with additional information
@@ -133,9 +140,3 @@ class StudentSchedule(models.Model): # where a student's work study schedule wil
 	day                = models.CharField(max_length=256, null=True)
 	start_time         = models.IntegerField(null=True)
 	end_time           = models.IntegerField(null=True)
-
-class SiteAvailability(models.Model): # dates and times when sites can take work study students
-	site_info  = models.ForeignKey(SiteInfo, on_delete=models.CASCADE, blank=True, null=True)
-	day        = models.CharField(max_length=256, null=True)
-	start_time = models.IntegerField(null=True)
-	end_time   = models.IntegerField(null=True)
