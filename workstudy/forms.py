@@ -96,12 +96,9 @@ class AppAvailabilityForm (forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AppAvailabilityForm, self).__init__(*args, **kwargs)
 
-        self.fields['day'] = forms.ChoiceField(
-        	choices = [ ('sunday', 'Sunday'),
-        		('monday', 'Monday'),
-                ('tuesday', 'Tuesday'),
-        	]
-        )
+        self.fields['start_time'] = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+        self.fields['end_time'] = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+
 
 #AppAvailabilityModelFormset = modelformset_factory(
 #AppAvailability,

@@ -22,7 +22,7 @@ def application_completed(request):
 def search(request):
 
 	current_year = datetime.datetime.now().year
-	choices = [(year, year) for year in range(current_year, current_year + 8)]
+	choices = [year for year in range(current_year, current_year + 8)]
 
 	query = request.GET.get('q')
 	query2 = request.GET.get('r')
@@ -70,29 +70,30 @@ def application(request):
 		personal_info_form = PersonalInfoForm(request.POST)
 		app_data_form = AppDataForm(request.POST)
 		site_placement_rank_form = SitePlacementRankForm(request.POST)
-		app_availbility_modelformset = AppAvailabilityModelFormset(request.POST) #, request.FILES, prefix = 'availility')
-		#formset = AuthorFormset(request.POST)
+		# app_availability_form = AppAvailabilityForm(request.POST)
+		app_avail_days = request.POST.getlist('days[]')
+		app_avail_start_time = request.POST.getlist('start_time[]')
+		app_avail_end_time = request.POST.getlist('end_time[]')
+		# app_availbility_modelformset = AppAvailabilityModelFormset(request.POST) #, request.FILES, prefix = 'availility')
+		# formset = AuthorFormset(request.POST)
 
-		if personal_info_form.is_valid() and app_data_form.is_valid() and site_placement_rank_form.is_valid() and app_availbility_modelformset.is_vaild():
+		if personal_info_form.is_valid() and app_data_form.is_valid() and site_placement_rank_form.is_valid():
 			personal_info_instance = personal_info_form.save(commit=False)
 			app_data_instance = app_data_form.save(commit=False)
 			site_placement_rank_instance = site_placement_rank_form.save(commit=False)
+			# app_availbility_instance = app_availability_form.save(commit=False)
 			# here you can add more fields or change them the way you want, after that you will save them
 			app_data_instance.personal_info = personal_info_instance
 			site_placement_rank_instance.app_data = app_data_instance
+			#app_availbility_instance.app_data = app_data_instance
 
 			personal_info_instance.save()
 			app_data_instance.save()
 			site_placement_rank_instance.save()
-			for form in app_availbility_modelformset:
-				# so that `book` instance can be attached.
-				app_availbility_instance = app_availbility_modelformset.save(commit=False)
-				app_availbility_instance.app_data = app_data_instance
-				app_availbility_instance.day = day
-				app_availbility_instance.start_time = start_time
-				app_availbility_instance.end_time = end_time
-				app_availbility_instance.save()
-			# return redirect('workstudy:application-details', pk=app_data_instance.pk)
+			# messages.info(request, str(app_avail_days))
+			for i in range(len(app_avail_days)):
+				user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
+				user_availability.save()
 			return redirect('workstudy:application-completed')
 		# if the form validation failed, for now just show the application form again and show the error
 		else:

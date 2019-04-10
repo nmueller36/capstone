@@ -47,9 +47,16 @@
     <div class="card">
       <ul class="list-group list-group-flush">
         {% for obj in items %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
-        {% endfor %}
-      </ul>
+        <!-- <div class="container"> -->
+          <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</button>
+          <div id="demo" class="collapse">
+            {{obj.first_name}}
+            {{obj.last_name}}
+            {{obj.student_id}}
+          <!-- </div> -->
+          </div>
+          {% endfor %}
+        </ul>
     </div>
   </div>
 </div>

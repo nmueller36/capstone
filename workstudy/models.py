@@ -95,8 +95,8 @@ class SitePlacementRank(models.Model): #section of application that will rank wh
 class AppAvailability(models.Model): #where student will enter their availility to work on application
 	app_data   = models.ForeignKey(AppData, on_delete=models.CASCADE, blank=True, null=True)
 	day        = models.CharField(max_length=256, null=True, verbose_name=u"Day" )#choices=DAYS
-	start_time = models.IntegerField(null=True, verbose_name=u"Start Time")
-	end_time   = models.IntegerField(null=True, verbose_name=u"End Time")
+	start_time = models.TimeField(auto_now=False, null=True, verbose_name=u"Start Time")
+	end_time   = models.TimeField(auto_now=False, null=True, verbose_name=u"End Time")
 
 
 class SiteInfo(models.Model): #important information regarding the sites that can take work study students

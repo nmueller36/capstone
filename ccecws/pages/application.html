@@ -8,25 +8,8 @@
         {{ personal_info_form|crispy }}
         {{ app_data_form|crispy }}
         <p> Please numerically rank your choices for a site placement in order of preference, with 1 being your ideal placement.<p>
-<<<<<<< HEAD
           {{site_placement_rank_form|crispy}}
-          {{ app_availbility_modelformset.management_form}}
-          <!-- {% for form in app_availbility_modelformset%}
-            {% crispy form%} -->
-          <!-- <div class="input-group">
-          <label>{{form.day.label}}</label>
-            {{form.day}}
-            <label>{{form.start_time.label}}</label>
-            {{form.start_time}}
-            <label>{{form.end_time.label}}</label>
-            {{form.end_time}}
-            <div class="input-group-append">
-                <button class="btn btn-success add-form-row">+</button>
-            </div> -->
-          <!-- {% endfor %} -->
-        <button class="btn btn-primary" type="submit">Submit</button>
-=======
-           {{ site_placement_rank_form|crispy }}
+<p>Please add the days and hours you are availble to work. Remember to consider how much assignments and papers you will have to complete and to save some time for them. Only put down days and hours you know you will be avavilbe to work. Work study shifts are a <strong><u>minimum of an hour and a half.</strong></u> Since most sites are off-campus, please leave a little time availbleilbe to get to your site. Please click Add Another Day if you would like to add to your availibity.  </p>
            <!-- <div class="form-group" id="availability-container"> -->
            <div class="form-group">
              <a href="javascript:;" id="add-new-day" >Add Another Day</a>
@@ -35,18 +18,26 @@
            <table id="availability-container" class="table">
              <tr>
               <td>
-               <label>{{app_availability_form.day.label}}</label>
-                <input name="days[1][day]">
+               <label>{{app_availability_form.day.label}}</label><br>
+               <select name="days[]">
+                 <option value = "sunday" > Sunday
+                 <option value = "monday" > Monday
+                 <option value = "tuesday" > Tuesday
+                 <option value = "wednesday" > Wednesday
+                 <option value = "thursday" > Thursday
+                 <option value = "friday" > Friday
+                 <option value = "saturday" > Saturday
+                </select>
               </td>
               <td>
                <!-- {{app_availability_form.day}} -->
-               <label>{{app_availability_form.start_time.label}}</label>
-               <input name="days[1][start_time]">
+               <label>{{app_availability_form.start_time.label}}</label><br>
+               <input name="start_time[]" type="time">
               </td>
               <td>
                <!-- {{app_availability_form.start_time}} -->
-               <label>{{app_availability_form.end_time.label}}</label>
-               <input name="days[1][end_time]">
+               <label>{{app_availability_form.end_time.label}}</label><br>
+               <input name="end_time[]" type="time">
               </td>
              </tr>
                <!-- {{app_availability_form.end_time}} -->
@@ -58,7 +49,6 @@
            <div class="form-group">
             <button class="btn btn-primary" type="submit">Submit</button>
            </div>
->>>>>>> 1fa62876f9f0073d7e134c25669e6828e750735e
     </form>
 </div>
 {% endblock %}
@@ -71,15 +61,23 @@ document.getElementById('add-new-day').onclick = function () {
   let template = `
           <td>
             <label>Day</label><br>
-            <input name="days[${i}][day]">
+            <select name="days[]">
+              <option value = "sunday" > Sunday
+              <option value = "monday" > Monday
+              <option value = "tuesday" > Tuesday
+              <option value = "wednesday" > Wednesday
+              <option value = "thursday" > Thursday
+              <option value = "friday" > Friday
+              <option value = "saturday" > Saturday
+             </select>
           </td>
           <td>
             <label>Start Time</label><br>
-            <input name="days[${i}][start_time]">
+            <input name="start_time[]" type="time">
           </td>
           <td>
             <label>End Time</label><br>
-            <input name="days[${i}][end_time]">
+            <input name="end_time[]" type="time">
           </td>
             `;
 
