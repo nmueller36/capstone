@@ -1,5 +1,5 @@
 from django import forms
-from .models import PersonalInfo, AppData, AppAvailability, SitePlacementRank, SiteInfo
+from .models import PersonalInfo, AppData, AppAvailability, SitePlacementRank, SiteInfo, SiteAvailability
 from django.forms import modelformset_factory
 import datetime
 
@@ -118,3 +118,17 @@ class SiteInfoForm (forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super(SiteInfoForm, self).__init__(*args, **kwargs)
+
+
+class SiteAvailabilityForm (forms.ModelForm):
+    class Meta:
+        model = SiteAvailability
+        fields = '__all__'
+        exclude = ('site_info',)
+
+        def __init__(self, *args, **kwargs):
+
+            super(SiteInfoForm, self).__init__(*args, **kwargs)
+
+            self.fields['start_time'] = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+            self.fields['end_time'] = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))

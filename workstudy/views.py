@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityForm
+from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityForm, SiteAvailabilityForm
 from django.db.models import Q
 from itertools import chain
 import datetime
@@ -221,10 +221,18 @@ def site_info_added (request):
 def site_information (request):
 	if request.method == "POST":
 		site_info_form = SiteInfoForm(request.POST)
+		site_avail_days = request.POST.getlist('site_days[]')
+		site_avail_start_time = request.POST.getlist('site_start_time[]')
+		site_avail_end_time = request.POST.getlist('site_end_time[]')
 
 		if site_info_form.is_valid():
 			site_info_instance = site_info_form.save(commit=False)
 			site_info_instance.save()
+
+			for i in range(len(site_avail_days)):
+				if site_avail_days[i] and site_avail_start_time[i] and site_avail_end_time[i]:
+					site_availability = SiteAvailability(site_info=site_info_instance, day=site_avail_days[i], start_time=site_avail_start_time[i], end_time=site_avail_end_time[i])
+					site_availability.save()
 			return redirect('workstudy:new_site')
 		else:
 			messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
@@ -234,5 +242,7 @@ def site_information (request):
 		# show the forms
 		context = {}
 		site_info_form = SiteInfoForm()
+		site_availability_form = SiteAvailabilityForm()
 		context['site_info_form'] = site_info_form
+		context['site_availability_form'] = site_availability_form
 		return render(request, 'add_site_info.html', context)
