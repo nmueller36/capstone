@@ -1,5 +1,5 @@
 from django import forms
-from .models import PersonalInfo, AppData, AppAvailability, SitePlacementRank, SiteInfo, SiteAvailability
+from .models import PersonalInfo, AppData, AppAvailability, SitePlacementRank, SiteInfo, SiteAvailability, StudentPlacement, StudentSchedule
 from django.forms import modelformset_factory
 import datetime
 
@@ -132,3 +132,23 @@ class SiteAvailabilityForm (forms.ModelForm):
 
             self.fields['start_time'] = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
             self.fields['end_time'] = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+
+class StudentPlacementForm (forms.ModelForm):
+    class Meta:
+        model = StudentPlacement
+        fields = '__all__'
+
+        def __init__(self, *args, **kwargs):
+
+            super(StudentPlacementForm, self).__init__(*args, **kwargs)
+
+
+class StudentScheduleForm(forms.ModelForm):
+    class Meta:
+        model = StudentSchedule
+        fields = '__all__'
+        exclude = ('student_placement',)
+
+        def __init__(self, *args, **kwargs):
+
+            super(StudentScheduleForm, self).__init__(*args, **kwargs)
