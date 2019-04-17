@@ -14,4 +14,9 @@ urlpatterns = [
 	url(r'^site_info/$', views.site_info_search, name="site_info_search"),
 	url(r'^placement/$', views.placement, name="placement"),
 	url(r'^add_site_info/completed/$', views.new_site_completed, name="new_site"),
+	url(r'^user/info/$', views.display_student, name="display_student"),
+	url(r'^site/info/$', views.display_site, name="display_site"),
+	url(r'^user/info/edit/$', views.edit_student, name="edit_student")#,
+	#url(r'^site/info/.*/edit', views.edit_site, name="edit_site")
+
 ]

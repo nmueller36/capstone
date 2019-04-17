@@ -165,6 +165,52 @@ def add(request):
 def placement(request):
 	return render(request, "placement.html", {})
 
+def display_student(request):
+	if request.method=='GET':
+		id = request.GET.get('id')
+		if not id:
+			return render(request, 'search.html')
+		else:
+			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = id)
+			allAppData = AppData.objects.all().filter(personal_info__student_id = id)
+			allAppAvail = AppAvailability.objects.all().filter(app_data__personal_info__student_id = id)
+			context = {
+				'allPersonalInfo': allPersonalInfo,
+				'allAppData': allAppData,
+				'allAppAvail': allAppAvail
+			}
+			return render(request, 'display_student.html', context)
+
+def edit_student(request):
+	if request.method=='GET':
+		id = request.GET.get('id')
+		if not id:
+			return render(request, 'search.html')
+		else:
+			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = id)
+			allAppData = AppData.objects.all().filter(personal_info__student_id = id)
+			allAppAvail = AppAvailability.objects.all().filter(app_data__personal_info__student_id = id)
+			context = {
+				'allPersonalInfo': allPersonalInfo,
+				'allAppData': allAppData,
+				'allAppAvail': allAppAvail
+			}
+			return render(request, 'edit_student.html', context)
+
+def display_site(request):
+	if request.method=='GET':
+		name = request.GET.get('name')
+		if not name:
+			return render(request, 'site_info_search.html')
+		else:
+			allSiteInfo = SiteInfo.objects.all().filter(site_name = 'name')
+			# allSiteAvail = SiteAvailability.objects.all().filter(site_info__site_name = 'name')
+			context = {
+				'allSiteInfo': allSiteInfo,
+				# 'allSiteAvail': allSiteAvail
+			}
+			return render(request, 'display_student.html', context)
+
 def application(request):
 	#template_name = 'pages/create_normal.html'
 	if request.method == "POST":

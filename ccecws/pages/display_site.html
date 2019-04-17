@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="lead">
+  {% for info in allSiteInfo %}
+    <h1>{{info.site_name}}</h1>
+    <p>Address: {{info.address}}</p>
+    <p>Description: {{info.description}}</p>
+    <p>Supervisor: {{info.supervisor}}</p>
+    <p>Supervisor Email: {{info.supervisor_email}}</p>
+    <p>Supervisor Phone Number: {{info.supervisor_phone}}</p>
+    <p>Second Contact: {{info.second_contact}}</p>
+    <p>Second Contact Email: {{info.second_contact_email}}</p>
+    <p>Second Contact Phone Number: {{info.second_contact_number}}</p>
+    <p>Clearances Needed: {{info.clearances_needed}}</p>
+    <p>Comments: {{info.comments}}</p>
+  {% endfor %}
+  <h3>Site Availability</h3>
+  <!-- {% for info in allSiteAvail %}
+    <p>{{info.day}} {{info.start_time}}-{{info.end_time}}</p>
+  {% endfor %} -->
+</div>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<!-- Currently just another display page, stashed all actual editing progress temporarily -->
+<div class="lead">
+  <h1>EDITING</h1>
+  {% for info in allPersonalInfo %}
+    <h1>{{info.preferred_name}} {{info.last_name}}</h1>
+    <h3>Application Info</h3>
+    <p>First name: {{info.first_name}}</p>
+    <p>Preferred name: {{info.preferred_name}}</p>
+    <p>Last name: {{info.last_name}}</p>
+    <p>Pronouns: {{info.pronouns}}</p>
+    <p>Email: {{info.email}}</p>
+  {% endfor %}
+  {% for info in allAppData %}
+    <p>Phone Number: {{info.phone_num}}</p>
+    <p>Semester: {{info.semester}}</p>
+    <p>Graduation Month: {{info.grad_month}}</p>
+    <p>Graduation Year: {{info.grad_year}}</p>
+    <p>Time of Form Submission: {{info.timeStamp}}</p>
+    <p>Qualifies for work study: {{info.work_study}}</p>
+    <p>It is for a class: {{info.for_class}}</p>
+    {% if info.for_class == True %}
+      <p>Which class: {{info.what_class}}</p>
+    {% endif %}
+    <p>Has a car: {{info.car}}</p>
+    {% if info.car == True %}
+      <p>Willing to be a carpool driver: {{info.carpool}}</p>
+    {% endif %}
+    <p>Desired hours: {{info.wanted_hours}}</p>
+    <p>Major: {{info.major}}</p>
+    <p>Is fluent in a foreign language: {{info.foreign_lang}}</p>
+    {% if info.foreign_lang == True %}
+      <p>Which language(s): {{info.languages}}</p>
+    {% endif %}
+    <p>Has clearances: {{info.clearances}}</p>
+    <p>Prior work: {{info.prior_work}}</p>
+    <p>Has previously worked at CCEC: {{info.ccec_ws}}</p>
+    {% if info.ccec_ws == True %}
+      <p>Which site: {{info.previous_site}}</p>
+      <p>Would like to remain at current site: {{info.remain_at_site}}</p>
+      <p>Would like to keep same schedule: {{info.keep_schedule}}</p>
+    {% endif %}
+    <p>How they heard about CCEC: {{info.hear_about_ccec}}</p>
+    <p>Current Placement: {{info.placement}}</p>
+    {% if info.placement == true %}
+          <h3>Student Placement</h3>
+          <p>This is where the placement info goes</p>
+    {% endif %}
+  {% endfor %}
+  <h3>Student Availability</h3>
+  {% for info in allAppAvail %}
+    <p>{{info.day}} {{info.start_time}}-{{info.end_time}}</p>
+  {% endfor %}
+</div>
+
+{% endblock %}
