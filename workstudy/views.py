@@ -16,16 +16,21 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 # import tables from the database
-from workstudy.models import PersonalInfo, AppData, SitePlacementRank, AppAvailability, SiteAvailability, SiteInfo, StudentPlacement, StudentSchedule
+from workstudy.models import PersonalInfo, AppData, SitePlacementRank, AppAvailability, SiteAvailability, SiteInfo, \
+	StudentPlacement, StudentSchedule
+
 
 def index(request):
 	return render(request, "index.html", {})
 
+
 def application_completed(request):
 	return render(request, "completed.html", {})
 
+
 def new_site_completed(request):
 	return render(request, "new_site.html", {})
+
 
 # This function is still in progress
 def search(request):
@@ -38,7 +43,8 @@ def search(request):
 	whichSearch = 0
 
 	general = request.GET.get('a')
-	name = request.GET.get('q')
+	firstname = request.GET.get('p')
+	lastname = request.GET.get('q')
 	email = request.GET.get('r')
 	semester = request.GET.get('s')
 	driver = request.GET.get('t')
@@ -53,99 +59,104 @@ def search(request):
 
 	if general != None and general != "":
 		whichSearch = 1
-		personalInfoSearch =  PersonalInfo.objects.filter(Q(student_id__icontains=general) |
-		Q(first_name__icontains=general) | Q(preferred_name__icontains=general) | Q(last_name__icontains=general) |
-		Q(email__icontains=general))
+		personalInfoSearch = PersonalInfo.objects.filter(Q(student_id__icontains=general) |
+			Q(first_name__icontains=general) | Q(preferred_name__icontains=general) | Q(last_name__icontains=general) |
+			Q(email__icontains=general))
 		appDataSearch = AppData.objects.filter(Q(semester__icontains=general) |
-		Q(phone_num__icontains=general) | Q(grad_month__icontains=general) | Q(grad_year__icontains=general) |
-		Q(what_class__icontains=general) | Q(wanted_hours__icontains=general) |
-		Q(major__icontains=general) | Q(languages__icontains=general) | Q(prior_work__icontains=general) |
-		Q(previous_site__icontains=general) | Q(hear_about_ccec__icontains=general))
-		appAvailabilitySearch = AppAvailability.objects.filter(Q(day__icontains=general) | Q(start_time__icontains=general) |
-		Q(end_time__icontains=general))
+			Q(phone_num__icontains=general) | Q(grad_month__icontains=general) |
+			Q(grad_year__icontains=general) | Q(what_class__icontains=general) |
+			Q(wanted_hours__icontains=general) | Q(major__icontains=general) |
+			Q(languages__icontains=general) | Q(prior_work__icontains=general) |
+			Q(previous_site__icontains=general) | Q(hear_about_ccec__icontains=general))
+		appAvailabilitySearch = AppAvailability.objects.filter(Q(day__icontains=general) |
+			Q(start_time__icontains=general) | Q(end_time__icontains=general))
 
 		if personalInfoSearch:
 			personalInfoResults = personalInfoSearch
 		elif appDataSearch:
 			temp = PersonalInfo.objects.none()
 			for app in appDataSearch:
-				person = PersonalInfo.objects.filter(Q(student_id = app.personal_info.student_id))
+				person = PersonalInfo.objects.filter(Q(student_id=app.personal_info.student_id))
 				temp = person.union(temp)
 			appDataResults = temp
 		elif appAvailabilitySearch:
 			temp = PersonalInfo.objects.none()
 			for app in appAvailabilitySearch:
-				person = PersonalInfo.objects.filter(Q(student_id = app.personal_info.student_id))
+				person = PersonalInfo.objects.filter(Q(student_id=app.personal_info.student_id))
 				temp = person.union(temp)
 			appAvailabilityResults = temp
 	else:
 		# Advanced search
 		results = PersonalInfo.objects.all()
-		# nameSearch = PersonalInfo.objects.none()
-		# emailSearch = PersonalInfo.objects.none()
-		# semesterData = PersonalInfo.objects.none()
-		# semesterSearch = PersonalInfo.objects.none()
 
-		if name:
-			print("name")
-			nameSearch = results.filter(Q(first_name__icontains=name) | Q(preferred_name__icontains=name) |
-			Q(last_name__icontains=name))
-			results = nameSearch
+		# Make sure spaces/full names accounted for
+		if firstname:
+			print("first name")
+			firstname = firstname.strip()
+			firstNameSearch = results.filter(Q(first_name__icontains=firstname) | Q(preferred_name__icontains=firstname))
+			results = firstNameSearch
+			whichSearch = 2
+		if lastname:
+			print("last name")
+			lastname = lastname.strip()
+			lastNameSearch = results.filter(Q(last_name__icontains=lastname))
+			results = lastNameSearch
 			whichSearch = 2
 		if email:
 			print("email")
+			email = email.strip()
 			emailSearch = results.filter(Q(email__icontains=email))
 			results = emailSearch
 			whichSearch = 2
 		if semester:
 			print("semester")
-			semesterData = AppData.objects.filter(Q(semester__icontains=semester))
-			temp = PersonalInfo.objects.none()
-			for sem in semesterData:
-				semesterSearch = results.filter(Q(student_id = sem.personal_info.student_id))
-				temp = semesterSearch.union(temp)
-			results = temp
+			wanted_items = set()
+			for entry in results:
+				if entry.appdata_set.filter(Q(semester__icontains=semester)).count() > 0:
+					wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 			whichSearch = 2
-		if not driver is None:
+		if driver is not None:
 			print("driver")
-			driverData = AppData.objects.filter(Q(car=True))
-			temp = PersonalInfo.objects.none()
-			for driver in driverData:
-				driverSearch = results.filter(Q(student_id = driver.personal_info.student_id))
-				temp = driverSearch.union(temp)
-			results = temp
+			# check if the results contain the drivers and if not, do not add them
+			wanted_items = set()
+			for entry in results:
+				if entry.appdata_set.filter(car=True).count() > 0:
+					wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 			whichSearch = 2
 		if day:
 			print("day")
-			dayData = AppAvailability.objects.filter(Q(day__icontains=day))
-			temp = PersonalInfo.objects.none()
-			for d in dayData:
-				daySearch = results.filter(Q(student_id = d.app_data.personal_info.student_id))
-				print(daySearch)
-				temp = daySearch.union(temp)
-			results = temp
+			wanted_items = set()
+			for entry in results:
+				apps = entry.appdata_set.all()
+				for app in apps:
+					if app.appavailability_set.filter(Q(day__icontains=day)).count() > 0:
+						wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 			whichSearch = 2
 		if starttime:
 			print("start time")
-			startData = AppAvailability.objects.filter(Q(start_time__icontains=starttime))
-			temp = PersonalInfo.objects.none()
-			for start in startData:
-				startSearch = results.filter(Q(student_id = start.app_data.personal_info.student_id))
-				temp = startSearch.union(temp)
-			results = temp
+			wanted_items = set()
+			for entry in results:
+				apps = entry.appdata_set.all()
+				for app in apps:
+					if app.appavailability_set.filter(Q(start_time__lte=starttime)).count() > 0:
+						wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 			whichSearch = 2
 		if endtime:
 			print("end time")
-			endData = AppAvailability.objects.filter(Q(end_time__icontains=endtime))
-			temp = PersonalInfo.objects.none()
-			for end in endData:
-				endSearch = results.filter(Q(student_id = end.app_data.personal_info.student_id))
-				temp = endSearch.union(temp)
-			results = temp
+			wanted_items = set()
+			for entry in results:
+				apps = entry.appdata_set.all()
+				for app in apps:
+					if app.appavailability_set.filter(Q(end_time__gte=endtime)).count() > 0:
+						wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 			whichSearch = 2
 
 		personalInfoResults = results
-		print(whichSearch)
 
 	context = {
 		'PerInfo': personalInfoResults,
@@ -157,16 +168,128 @@ def search(request):
 
 	return render(request, "search.html", context)
 
+
 def student_placement_search(request):
-	context = {}
+	whichSearch = 0
+
+	general = request.GET.get('a')
+	firstname = request.GET.get('p')
+	lastname = request.GET.get('q')
+	email = request.GET.get('r')
+
+	# Initialize results to display all items in database
+	personalInfoResults = PersonalInfo.objects.none()
+	studentPlacementResults = PersonalInfo.objects.none()
+	studentScheduleResults = PersonalInfo.objects.none()
+
+	if general != None and general != "":
+		whichSearch = 1
+		personalInfoSearch = PersonalInfo.objects.filter(Q(student_id__icontains=general) |
+			Q(first_name__icontains=general) | Q(preferred_name__icontains=general) | Q(last_name__icontains=general) |
+			Q(email__icontains=general))
+		studentPlacementSearch = StudentPlacement.objects.filter(Q(driver__icontains=general) |
+			Q(started__icontains=general) | Q(fbi_fingerprint__icontains=general) | Q(child_abuse__icontains=general) |
+			Q(state_police__icontains=general) | Q(physical__icontains=general)  | Q(ppd__icontains=general)  |
+			Q(comments__icontains=general))
+		studentScheduleSearch = StudentSchedule.objects.filter(Q(day__icontains=general) |
+			Q(start_time__icontains=general) | Q(end_time__icontains=general))
+
+		if personalInfoSearch:
+			personalInfoResults = personalInfoSearch
+		elif studentPlacementSearch:
+			temp = PersonalInfo.objects.none()
+			for student in studentPlacementSearch:
+				person = PersonalInfo.objects.filter(Q(student_id=student.personal_info.student_id))
+				temp = person.union(temp)
+			studentPlacementResults = temp
+		elif studentScheduleSearch:
+			temp = PersonalInfo.objects.none()
+			for student in studentScheduleSearch:
+				person = PersonalInfo.objects.filter(Q(student_id=student.student_placement.personal_info.student_id))
+				temp = person.union(temp)
+			studentScheduleResults = temp
+	else:
+		# Advanced search
+		results = PersonalInfo.objects.all()
+
+		# Make sure spaces/full names accounted for
+		if firstname:
+			print("first name")
+			firstname = firstname.strip()
+			firstNameSearch = results.filter(Q(first_name__icontains=firstname) | Q(preferred_name__icontains=firstname))
+			results = firstNameSearch
+			whichSearch = 2
+		if lastname:
+			print("last name")
+			lastname = lastname.strip()
+			lastNameSearch = results.filter(Q(last_name__icontains=lastname))
+			results = lastNameSearch
+			whichSearch = 2
+		if email:
+			print("email")
+			email = email.strip()
+			emailSearch = results.filter(Q(email__icontains=email))
+			results = emailSearch
+			whichSearch = 2
+
+		personalInfoResults = results
+
+
+	context = {
+		'PerInfo': personalInfoResults,
+		'StudPlace': studentPlacementResults,
+		'StudSched': studentScheduleResults,
+		'searchType': whichSearch
+	}
 	return render(request, "student_placement_search.html", context)
 
+
 def site_info_search(request):
-	context = {}
+	whichSearch = 0
+
+	general = request.GET.get('a')
+
+	# Initialize results to display all items in database
+	siteInfoResults = SiteInfo.objects.none()
+	siteAvailabilityResults = SiteInfo.objects.none()
+
+	if general != None and general != "":
+		whichSearch = 1
+		siteInfoSearch = SiteInfo.objects.filter(Q(site_name__icontains=general) |
+			Q(address__icontains=general) | Q(description__icontains=general) | Q(supervisor__icontains=general) |
+			Q(supervisor_email__icontains=general) | Q(supervisor_phone__icontains=general) |
+			Q(second_contact__icontains=general) | Q(second_contact_email__icontains=general) |
+			Q(second_contact_number__icontains=general) | Q(clearances_needed__icontains=general) |
+			Q(comments__icontains=general))
+		siteAvailabilitySearch = SiteAvailability.objects.filter(Q(day__icontains=general) |
+			Q(start_time__icontains=general) | Q(end_time__icontains=general))
+
+		if siteInfoSearch:
+			siteInfoResults = siteInfoSearch
+		elif siteAvailabilitySearch:
+			temp = SiteInfo.objects.none()
+			for student in siteAvailabilitySearch:
+				person = SiteInfo.objects.filter(Q(site_name=student.site_info.site_name))
+				temp = person.union(temp)
+			siteAvailabilityResults = temp
+
+	else:
+		# Advanced search
+		results = SiteInfo.objects.all()
+
+		siteInfoResults = results
+
+	context = {
+		'SiteInfo': siteInfoResults,
+		'SiteAvail': siteAvailabilityResults,
+		'searchType': whichSearch
+	}
 	return render(request, "site_info_search.html", context)
+
 
 def add(request):
 	pass
+
 
 def placement(request):
 	if request.method == "POST":
@@ -198,8 +321,9 @@ def placement(request):
 		context['student_schedule_form'] = student_schedule_form
 		return render(request, 'placement.html', context)
 
+
 def application(request):
-	#template_name = 'pages/create_normal.html'
+	# template_name = 'pages/create_normal.html'
 	if request.method == "POST":
 		personal_info_form = PersonalInfoForm(request.POST)
 		app_data_form = AppDataForm(request.POST)
@@ -248,7 +372,7 @@ def application(request):
 		return render(request, 'application.html', context)
 
 
-def site_info_added (request):
+def site_info_added(request):
 	return render(request, "new_site.html", {})
 
 
