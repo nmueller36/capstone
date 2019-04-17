@@ -11,7 +11,7 @@
           {{site_placement_rank_form|crispy}}
 <p>Please add the days and hours you are availble to work. Remember to consider how much assignments and papers you will have to complete and to save some time for them. Only put down days and hours you know you will be avavilbe to work. Work study shifts are a <strong><u>minimum of an hour and a half.</strong></u> Since most sites are off-campus, please leave a little time availbleilbe to get to your site. Please click Add Another Day if you would like to add to your availibity.  </p>
            <!-- <div class="form-group" id="availability-container"> -->
-           <!-- <div class="form-group">
+           <div class="form-group">
              <a href="javascript:;" id="add-new-day" >Add Another Day</a>
            </div>
            <div class="table-responsive">
@@ -34,16 +34,16 @@
                <label>{{app_availability_form.start_time.label}}</label><br>
                <input name="start_time[]" type="time">
               </td>
-              <td> -->
+              <td>
                <!-- {{app_availability_form.start_time}} -->
                <label>{{app_availability_form.end_time.label}}</label><br>
                <input name="end_time[]" type="time">
               </td>
-             </tr> --> -->
+             </tr>
                <!-- {{app_availability_form.end_time}} -->
                <!-- <div class="input-group-append"> -->
-           <!-- </table>
-           </div> -->
+           </table>
+           </div>
 
               <!-- <button class="btn btn-success add-form-row">+</button> -->
            <div class="form-group">
@@ -55,7 +55,6 @@
 
 {% block customjs %}
 <<script type="text/javascript">
-
 let i = 2;
 document.getElementById('add-new-day').onclick = function () {
   let template = `
@@ -80,12 +79,10 @@ document.getElementById('add-new-day').onclick = function () {
             <input name="end_time[]" type="time">
           </td>
             `;
-
     let container = document.getElementById('availability-container');
     let div = document.createElement('tr');
     div.innerHTML = template;
     container.insertBefore(div, container.firstChild);
-
     i++;
 }
 </script>
