@@ -47,6 +47,11 @@
                   <a class="dropdown-item" href="{% url 'workstudy:site_info_search' %}">Site Info</a>
                 </div>
               </li>
+              {% if request.user.is_authenticated %}
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'workstudy:logout' %}">Logout <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
             </ul>
           </div>
         </nav>

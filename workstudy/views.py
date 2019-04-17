@@ -1,9 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityForm, SiteAvailabilityForm
+from django.http import HttpResponseRedirect
+from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityForm, SiteAvailabilityForm, StudentPlacementForm, StudentScheduleForm
 from django.db.models import Q
 from itertools import chain
 import datetime
+
+from django.urls import reverse
+
+# add imports for login and logout
+from django.contrib.auth import authenticate, login, logout
 
 from django.shortcuts import redirect
 
@@ -163,7 +169,34 @@ def add(request):
 	pass
 
 def placement(request):
-	return render(request, "placement.html", {})
+	if request.method == "POST":
+		student_placement_form = StudentPlacementForm(request.POST)
+		#id = int(request.POST.get('id'))
+		#student = PersonalInfo(student_id=id)
+		student_avail_days = request.POST.getlist('student_days[]')
+		student_avail_start_time = request.POST.getlist('student_start_time[]')
+		student_avail_end_time = request.POST.getlist('student_end_time[]')
+
+		if student_placement_form.is_valid():
+			student_placement_instance = student_placement_form.save(commit=False)
+			student_placement_instance.save()
+
+			for i in range(len(student_avail_days)):
+				if student_avail_days[i] and student_avail_start_time[i] and student_avail_end_time[i]:
+					student_availability = StudentSchedule(student_placement=student_placement_instance, day=student_avail_days[i], start_time=student_avail_start_time[i], end_time=app_avail_end_time[i])
+					student_availability.save()
+		else:
+			messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
+			return redirect('workstudy:placement')
+
+	else:
+		# show the forms
+		context = {}
+		student_placement_form = StudentPlacementForm()
+		student_schedule_form = StudentScheduleForm()
+		context['student_placement_form'] = student_placement_form
+		context['student_schedule_form'] = student_schedule_form
+		return render(request, 'placement.html', context)
 
 def application(request):
 	#template_name = 'pages/create_normal.html'
@@ -218,31 +251,56 @@ def application(request):
 def site_info_added (request):
 	return render(request, "new_site.html", {})
 
+
+def user_logout(request):
+	logout(request)
+	return HttpResponseRedirect(reverse('workstudy:index'))
+
+
+def login_page(request):
+	if request.user.is_authenticated:
+		return render(request, 'workstudy/index.html', {})
+	return render(request, "login.html", {})
+
+
+def process_login(request):
+	username = request.POST.get('username')
+	password = request.POST.get('password')
+	user = authenticate(username=username, password=password)
+	if user is not None:
+		request.session.set_expiry(settings.SESSION_EXPIRY_TIME)
+		login(request, user)
+		return HttpResponseRedirect(reverse('workstudy:index'))
+	messages.info(request, 'Wrong username or password')
+	return HttpResponseRedirect(reverse('workstudy:login'))
+
+
 def site_information (request):
-	if request.method == "POST":
-		site_info_form = SiteInfoForm(request.POST)
-		site_avail_days = request.POST.getlist('site_days[]')
-		site_avail_start_time = request.POST.getlist('site_start_time[]')
-		site_avail_end_time = request.POST.getlist('site_end_time[]')
+	if request.user.is_authenticated:
+		if request.method == "POST":
+			site_info_form = SiteInfoForm(request.POST)
+			site_avail_days = request.POST.getlist('site_days[]')
+			site_avail_start_time = request.POST.getlist('site_start_time[]')
+			site_avail_end_time = request.POST.getlist('site_end_time[]')
 
-		if site_info_form.is_valid():
-			site_info_instance = site_info_form.save(commit=False)
-			site_info_instance.save()
+			if site_info_form.is_valid():
+				site_info_instance = site_info_form.save(commit=False)
+				site_info_instance.save()
 
-			for i in range(len(site_avail_days)):
-				if site_avail_days[i] and site_avail_start_time[i] and site_avail_end_time[i]:
-					site_availability = SiteAvailability(site_info=site_info_instance, day=site_avail_days[i], start_time=site_avail_start_time[i], end_time=site_avail_end_time[i])
-					site_availability.save()
-			return redirect('workstudy:new_site')
+				for i in range(len(site_avail_days)):
+					if site_avail_days[i] and site_avail_start_time[i] and site_avail_end_time[i]:
+						site_availability = SiteAvailability(site_info=site_info_instance, day=site_avail_days[i], start_time=site_avail_start_time[i], end_time=site_avail_end_time[i])
+						site_availability.save()
+				return redirect('workstudy:new_site')
+			else:
+				messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
+				return redirect('workstudy:add_site_info')
 		else:
-			messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
-			return redirect('workstudy:add_site_info')
-
-	else:
-		# show the forms
-		context = {}
-		site_info_form = SiteInfoForm()
-		site_availability_form = SiteAvailabilityForm()
-		context['site_info_form'] = site_info_form
-		context['site_availability_form'] = site_availability_form
-		return render(request, 'add_site_info.html', context)
+			# show the forms
+			context = {}
+			site_info_form = SiteInfoForm()
+			site_availability_form = SiteAvailabilityForm()
+			context['site_info_form'] = site_info_form
+			context['site_availability_form'] = site_availability_form
+			return render(request, 'add_site_info.html', context)
+	return HttpResponseRedirect(reverse('workstudy:login'))

@@ -6,6 +6,9 @@ app_name = 'workstudy'
 
 urlpatterns = [
 	url(r'^$', views.index, name="index"),
+	url(r'^login/$', views.login_page, name="login"),
+	url(r'^logout/$', views.user_logout, name="logout"),
+	url(r'^process-login/$', views.process_login, name="process_login"),
 	url(r'^application/$', views.application, name="application"),
 	url(r'^application/completed/$', views.application_completed, name="application-completed"),
 	url(r'^add_site_info/$', views.site_information, name="add_site_info"),
