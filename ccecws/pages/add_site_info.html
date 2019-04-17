@@ -6,7 +6,85 @@
 <div class="lead">
     <form action="." method="POST"> {% csrf_token %}
         {{ site_info_form|crispy }}
-        <button class="btn btn-primary" type="submit">Submit</button>
+
+        <p>Please add the days and hours that the site is available to have students work. </p>
+                   <!-- <div class="form-group" id="availability-container"> -->
+                   <div class="form-group">
+                     <a href="javascript:;" id="add-new-day" >Add Another Day</a>
+                   </div>
+                   <div class="table-responsive">
+                   <table id="availability-container" class="table">
+                     <tr>
+                      <td>
+                       <label>{{app_availability_form.day.label}}</label><br>
+                       <select name="site_days[]">
+                         <option value = "sunday" > Sunday
+                         <option value = "monday" > Monday
+                         <option value = "tuesday" > Tuesday
+                         <option value = "wednesday" > Wednesday
+                         <option value = "thursday" > Thursday
+                         <option value = "friday" > Friday
+                         <option value = "saturday" > Saturday
+                        </select>
+                      </td>
+                      <td>
+                       <!-- {{app_availability_form.day}} -->
+                       <label>{{app_availability_form.start_time.label}}</label><br>
+                       <input name="site_start_time[]" type="time">
+                      </td>
+                      <td>
+                       <!-- {{app_availability_form.start_time}} -->
+                       <label>{{app_availability_form.end_time.label}}</label><br>
+                       <input name="site_end_time[]" type="time">
+                      </td>
+                     </tr>
+                       <!-- {{app_availability_form.end_time}} -->
+                       <!-- <div class="input-group-append"> -->
+                   </table>
+                   </div>
+
+                      <!-- <button class="btn btn-success add-form-row">+</button> -->
+                   <div class="form-group">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                   </div>
     </form>
 </div>
+{% endblock %}
+
+{% block customjs %}
+<<script type="text/javascript">
+
+let i = 2;
+document.getElementById('add-new-day').onclick = function () {
+  let template = `
+          <td>
+            <label>Day</label><br>
+            <select name="site_days[]">
+              <option value = "sunday" > Sunday
+              <option value = "monday" > Monday
+              <option value = "tuesday" > Tuesday
+              <option value = "wednesday" > Wednesday
+              <option value = "thursday" > Thursday
+              <option value = "friday" > Friday
+              <option value = "saturday" > Saturday
+             </select>
+          </td>
+          <td>
+            <label>Start Time</label><br>
+            <input name="site_start_time[]" type="time">
+          </td>
+          <td>
+            <label>End Time</label><br>
+            <input name="site_end_time[]" type="time">
+          </td>
+            `;
+
+    let container = document.getElementById('availability-container');
+    let div = document.createElement('tr');
+    div.innerHTML = template;
+    container.insertBefore(div, container.firstChild);
+
+    i++;
+}
+</script>
 {% endblock %}

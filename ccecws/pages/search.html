@@ -42,8 +42,12 @@
   <p>Filter search by fields.</p>
   <div class="lead form-inline">
     <form action="{% url 'workstudy:search' %}" method="GET">
+        <div class="form-group">
+          <label for="p" class="mr-sm-2">First Name: </label>
+          <input class="form-control mb-2 mr-sm-2" type="text" name="p" id="p" value="{{request.GET.p}}">
+        </div>
       <div class="form-group">
-        <label for="q" class="mr-sm-2">Name: </label>
+        <label for="q" class="mr-sm-2">Last Name: </label>
         <input class="form-control mb-2 mr-sm-2" type="text" name="q" id="q" value="{{request.GET.q}}">
       </div>
       <div class="form-group">
@@ -77,11 +81,11 @@
       </div>
       <div class="form-group">
         <label for="v" class="mr-sm-2">Start time: </label>
-        <input class="form-control mb-2 mr-sm-2" type="text" name="v" id="v" value="{{request.GET.v}}">
+        <input class="form-control mb-2 mr-sm-2" type="time" name="v" id="v" value="{{request.GET.v}}">
       </div>
       <div class="form-group">
         <label for="w" class="mr-sm-2">End time: </label>
-        <input class="form-control mb-2 mr-sm-2" type="text" name="w" id="w" value="{{request.GET.w}}">
+        <input class="form-control mb-2 mr-sm-2" type="time" name="w" id="w" value="{{request.GET.w}}">
       </div>
       <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Search</button>
     </form>

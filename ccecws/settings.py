@@ -14,6 +14,9 @@ import os
 
 TIME_INPUT_FORMAT = ('%I:%M %p',)
 
+# Set the session expiry time
+SESSION_EXPIRY_TIME = 14400  # 4 hours and then log out automatically
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

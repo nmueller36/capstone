@@ -10,6 +10,33 @@
   <hr>
   <h3>General Search</h3>
   <p>Search for keywords across all site data.</p>
+  <div class="lead form-inline">
+    <form action="{% url 'workstudy:site_info_search' %}" method="GET">
+      <div class="form-group form-inline">
+        <input class="form-control mb-2 mr-sm-2" type="text" name="a" id="a" value="{{request.GET.a}}">
+        <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+  <hr>
+  {% if searchType == 1 %}
+  <div class="lead">
+    <p>Search results:</p>
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        {% for obj in SiteInfo %}
+        <li class="list-group-item">  {{obj.site_name}}</li>
+        {% endfor %}
+        {% for obj in SiteAvail %}
+        <li class="list-group-item">  {{obj.site_name}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <hr>
+  {% endif %}
+  <h3>Advanced Search</h3>
+  <p>Filter search by fields.</p>
 </div>
 
 {% endblock %}

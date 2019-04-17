@@ -10,6 +10,73 @@
   <hr>
   <h3>General Search</h3>
   <p>Search for keywords across all student placement data.</p>
+  <div class="lead form-inline">
+    <form action="{% url 'workstudy:student_placement_search' %}" method="GET">
+      <div class="form-group form-inline">
+        <input class="form-control mb-2 mr-sm-2" type="text" name="a" id="a" value="{{request.GET.a}}">
+        <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+  <hr>
+  {% if searchType == 1 %}
+  <div class="lead">
+    <p>Search results:</p>
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        {% for obj in PerInfo %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+        {% for obj in StudPlace %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+        {% for obj in StudSched %}
+        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <hr>
+  {% endif %}
+  <h3>Advanced Search</h3>
+  <p>Filter search by fields.</p>
+  <div class="lead form-inline">
+    <form action="{% url 'workstudy:student_placement_search' %}" method="GET">
+        <div class="form-group">
+          <label for="p" class="mr-sm-2">First Name: </label>
+          <input class="form-control mb-2 mr-sm-2" type="text" name="p" id="p" value="{{request.GET.p}}">
+        </div>
+        <div class="form-group">
+          <label for="q" class="mr-sm-2">Last Name: </label>
+          <input class="form-control mb-2 mr-sm-2" type="text" name="q" id="q" value="{{request.GET.q}}">
+        </div>
+        <div class="form-group">
+          <label for="r" class="mr-sm-2">Email: </label>
+          <input class="form-control mb-2 mr-sm-2" type="text" name="r" id="r" value="{{request.GET.r}}">
+        </div>
+        <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Search</button>
+        </form>
+    </div>
+    <hr>
+    {% if searchType == 2 %}
+    <div class="lead">
+      <p>Search results:</p>
+      <div class="card">
+        <ul class="list-group list-group-flush">
+          {% for obj in PerInfo %}
+          <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+          {% endfor %}
+          {% for obj in StudPlace %}
+          <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+          {% endfor %}
+          {% for obj in StudSched %}
+          <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <hr>
+    {% endif %}
 </div>
 
 {% endblock %}
