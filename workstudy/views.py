@@ -176,11 +176,16 @@ def student_placement_search(request):
 	firstname = request.GET.get('p')
 	lastname = request.GET.get('q')
 	email = request.GET.get('r')
+	sitename = request.GET.get('s')
+	day = request.GET.get('t')
+	starttime = request.GET.get('u')
+	endtime = request.GET.get('v')
 
 	# Initialize results to display all items in database
 	personalInfoResults = PersonalInfo.objects.none()
 	studentPlacementResults = PersonalInfo.objects.none()
 	studentScheduleResults = PersonalInfo.objects.none()
+	siteInfoResults = PersonalInfo.objects.none()
 
 	if general != None and general != "":
 		whichSearch = 1
@@ -193,6 +198,12 @@ def student_placement_search(request):
 			Q(comments__icontains=general))
 		studentScheduleSearch = StudentSchedule.objects.filter(Q(day__icontains=general) |
 			Q(start_time__icontains=general) | Q(end_time__icontains=general))
+		siteInfoSearch = SiteInfo.objects.filter(Q(site_name__icontains=general) |
+			Q(address__icontains=general) | Q(description__icontains=general) | Q(supervisor__icontains=general) |
+			Q(supervisor_email__icontains=general) | Q(supervisor_phone__icontains=general) |
+			Q(second_contact__icontains=general) | Q(second_contact_email__icontains=general) |
+			Q(second_contact_number__icontains=general) | Q(clearances_needed__icontains=general) |
+			Q(comments__icontains=general))
 
 		if personalInfoSearch:
 			personalInfoResults = personalInfoSearch
@@ -208,11 +219,18 @@ def student_placement_search(request):
 				person = PersonalInfo.objects.filter(Q(student_id=student.student_placement.personal_info.student_id))
 				temp = person.union(temp)
 			studentScheduleResults = temp
+		elif siteInfoSearch:
+			temp = PersonalInfo.objects.none()
+			for site in siteInfoSearch:
+				placements = StudentPlacement.objects.filter(Q(site_info=site))
+				for student in placements:
+					person = PersonalInfo.objects.filter(Q(student_id=student.personal_info.student_id))
+					temp = person.union(temp)
+			siteInfoResults = temp
 	else:
 		# Advanced search
 		results = PersonalInfo.objects.all()
 
-		# Make sure spaces/full names accounted for
 		if firstname:
 			print("first name")
 			firstname = firstname.strip()
@@ -231,14 +249,54 @@ def student_placement_search(request):
 			emailSearch = results.filter(Q(email__icontains=email))
 			results = emailSearch
 			whichSearch = 2
+		if sitename:
+			print("site name")
+			wanted_items = set()
+			for entry in results:
+				placements = entry.studentplacement_set.all()
+				for place in placements:
+					if place.site_info.site_name == sitename:
+						wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
+			whichSearch = 2
+		if day:
+			print("day")
+			wanted_items = set()
+			for entry in results:
+				placements = entry.studentplacement_set.all()
+				for place in placements:
+					if place.studentschedule_set.filter(Q(day__icontains=day)).count() > 0:
+						wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
+			whichSearch = 2
+		if starttime:
+			print("start time")
+			wanted_items = set()
+			for entry in results:
+				placements = entry.studentplacement_set.all()
+				for place in placements:
+					if place.studentschedule_set.filter(Q(start_time__lte=starttime)).count() > 0:
+						wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
+			whichSearch = 2
+		if endtime:
+			print("end time")
+			wanted_items = set()
+			for entry in results:
+				placements = entry.studentplacement_set.all()
+				for place in placements:
+					if place.studentschedule_set.filter(Q(end_time__gte=endtime)).count() > 0:
+						wanted_items.add(entry.student_id)
+			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
+			whichSearch = 2
 
 		personalInfoResults = results
-
 
 	context = {
 		'PerInfo': personalInfoResults,
 		'StudPlace': studentPlacementResults,
 		'StudSched': studentScheduleResults,
+		'SiteInfo': siteInfoResults,
 		'searchType': whichSearch
 	}
 	return render(request, "student_placement_search.html", context)
@@ -248,6 +306,10 @@ def site_info_search(request):
 	whichSearch = 0
 
 	general = request.GET.get('a')
+	sitename = request.GET.get('s')
+	day = request.GET.get('t')
+	starttime = request.GET.get('u')
+	endtime = request.GET.get('v')
 
 	# Initialize results to display all items in database
 	siteInfoResults = SiteInfo.objects.none()
@@ -276,6 +338,37 @@ def site_info_search(request):
 	else:
 		# Advanced search
 		results = SiteInfo.objects.all()
+
+		if sitename:
+			print("site name")
+			sitename = sitename.strip()
+			siteNameSearch = results.filter(Q(site_name__icontains=sitename))
+			results = siteNameSearch
+			whichSearch = 2
+		if day:
+			print("day")
+			wanted_items = set()
+			for entry in results:
+				if entry.siteavailability_set.filter(Q(day__icontains=day)).count() > 0:
+					wanted_items.add(entry.site_name)
+			results = SiteInfo.objects.filter(site_name__in=wanted_items)
+			whichSearch = 2
+		if starttime:
+			print("start time")
+			wanted_items = set()
+			for entry in results:
+				if entry.siteavailability_set.filter(Q(start_time__lte=starttime)).count() > 0:
+					wanted_items.add(entry.site_name)
+			results = SiteInfo.objects.filter(site_name__in=wanted_items)
+			whichSearch = 2
+		if endtime:
+			print("end time")
+			wanted_items = set()
+			for entry in results:
+				if entry.siteavailability_set.filter(Q(end_time__gte=endtime)).count() > 0:
+					wanted_items.add(entry.site_name)
+			results = SiteInfo.objects.filter(site_name__in=wanted_items)
+			whichSearch = 2
 
 		siteInfoResults = results
 
