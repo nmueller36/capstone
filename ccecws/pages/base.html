@@ -30,9 +30,12 @@
               <li class="nav-item active">
                 <a class="nav-link" href="{% url 'workstudy:application' %}">Application <span class="sr-only">(current)</span></a>
               </li>
+              {% if request.user.is_authenticated %}
               <li class="nav-item active">
                 <a class="nav-link" href="{% url 'workstudy:add_site_info' %}">Add Site <span class="sr-only">(current)</span></a>
               </li>
+              {% endif %}
+              {% if request.user.is_authenticated %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Search
@@ -44,6 +47,7 @@
                   <a class="dropdown-item" href="{% url 'workstudy:site_info_search' %}">Site Info</a>
                 </div>
               </li>
+              {% endif %}
               {% if request.user.is_authenticated %}
               <li class="nav-item active">
                 <a class="nav-link" href="{% url 'workstudy:logout' %}">Logout <span class="sr-only">(current)</span></a>

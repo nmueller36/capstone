@@ -3,6 +3,20 @@
 {% block content %}
 
 <div class="lead">
+{% if request.user.is_authenticated %}
+<div class="card mt-3 mb-3">
+  <div class="card-body">
+    <h4 class="card-title">Welcome, Admin!</h4>
+    <p class="card-text">As an Administrator,
+    you can search through student and site info, view student and site profiles,
+    place students at a work study site, and add sites to the work study program.</p>
+    <p class="card-text"><strong>To have a new site enter their information, have them
+    navigate to this link: [INSERT LINK ONCE HOSTED]</strong></p>
+    <!-- <a href="{% url 'workstudy:add_site_info' %}" class="card-link">Adding a Site</a>
+    <a href="#" class="card-link">Another link</a> -->
+  </div>
+</div>
+{% endif %}
   <h3>Welcome to the Community and Civic Engagement Center (CCEC)! </h3>
   <strong>You can submit your work-study application here.</strong>
   <p>Here is the list of all of our current work-study sites:</p>
