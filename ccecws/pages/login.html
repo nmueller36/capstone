@@ -5,11 +5,11 @@
   <form action="{% url 'workstudy:process_login' %}" method="POST"> {% csrf_token %}
     <div class="form-group">
       <label for="exampleInputUsername">Username</label>
-      <input type="text" class="form-control" id="exampleInputUsername" placeholder="Enter your username">
+      <input type="text" name="username" class="form-control" id="exampleInputUsername" placeholder="Enter your username">
     </div>
     <div class="form-group">
       <label for="exampleInputPassword">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword" placeholder="Enter your password">
+      <input type="password" name="password" class="form-control" id="exampleInputPassword" placeholder="Enter your password">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>

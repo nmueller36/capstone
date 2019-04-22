@@ -5,6 +5,7 @@ from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInf
 from django.db.models import Q
 from itertools import chain
 import datetime
+from django.conf import settings
 
 from django.urls import reverse
 
