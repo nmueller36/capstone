@@ -31,8 +31,6 @@ def application_completed(request):
 def new_site_completed(request):
 	return render(request, "new_site.html", {})
 
-
-# This function is still in progress
 def search(request):
 	# Calculates the current and next two semesters to populate search criteria
 	current_year = datetime.datetime.now().year
@@ -73,18 +71,33 @@ def search(request):
 
 		if personalInfoSearch:
 			personalInfoResults = personalInfoSearch
+			wanted_items = set()
+			for entry in personalInfoResults:
+				if not entry.appdata_set.filter(Q(placement="True")).count() > 0:
+					wanted_items.add(entry.student_id)
+			personalInfoResults = PersonalInfo.objects.filter(student_id__in=wanted_items)
 		elif appDataSearch:
 			temp = PersonalInfo.objects.none()
 			for app in appDataSearch:
 				person = PersonalInfo.objects.filter(Q(student_id=app.personal_info.student_id))
 				temp = person.union(temp)
 			appDataResults = temp
+			wanted_items = set()
+			for entry in appDataResults:
+				if not entry.appdata_set.filter(Q(placement="True")).count() > 0:
+					wanted_items.add(entry.student_id)
+			appDataResults = PersonalInfo.objects.filter(student_id__in=wanted_items)
 		elif appAvailabilitySearch:
 			temp = PersonalInfo.objects.none()
 			for app in appAvailabilitySearch:
 				person = PersonalInfo.objects.filter(Q(student_id=app.personal_info.student_id))
 				temp = person.union(temp)
 			appAvailabilityResults = temp
+			wanted_items = set()
+			for entry in appAvailabilityResults:
+				if not entry.appdata_set.filter(Q(placement="True")).count() > 0:
+					wanted_items.add(entry.student_id)
+			appAvailabilityResults = PersonalInfo.objects.filter(student_id__in=wanted_items)
 	else:
 		# Advanced search
 		results = PersonalInfo.objects.all()
@@ -156,6 +169,13 @@ def search(request):
 			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 			whichSearch = 2
 
+		# Filter out results to only include applications, no placements
+		wanted_items = set()
+		for entry in results:
+			if not entry.appdata_set.filter(Q(placement="True")).count() > 0:
+				wanted_items.add(entry.student_id)
+		results = PersonalInfo.objects.filter(student_id__in=wanted_items)
+
 		personalInfoResults = results
 
 	context = {
@@ -207,18 +227,33 @@ def student_placement_search(request):
 
 		if personalInfoSearch:
 			personalInfoResults = personalInfoSearch
+			wanted_items = set()
+			for entry in personalInfoResults:
+				if entry.appdata_set.filter(Q(placement="True")).count() > 0:
+					wanted_items.add(entry.student_id)
+			personalInfoResults = PersonalInfo.objects.filter(student_id__in=wanted_items)
 		elif studentPlacementSearch:
 			temp = PersonalInfo.objects.none()
 			for student in studentPlacementSearch:
 				person = PersonalInfo.objects.filter(Q(student_id=student.personal_info.student_id))
 				temp = person.union(temp)
 			studentPlacementResults = temp
+			wanted_items = set()
+			for entry in studentPlacementResults:
+				if entry.appdata_set.filter(Q(placement="True")).count() > 0:
+					wanted_items.add(entry.student_id)
+			studentPlacementResults = PersonalInfo.objects.filter(student_id__in=wanted_items)
 		elif studentScheduleSearch:
 			temp = PersonalInfo.objects.none()
 			for student in studentScheduleSearch:
 				person = PersonalInfo.objects.filter(Q(student_id=student.student_placement.personal_info.student_id))
 				temp = person.union(temp)
 			studentScheduleResults = temp
+			wanted_items = set()
+			for entry in studentScheduleResults:
+				if entry.appdata_set.filter(Q(placement="True")).count() > 0:
+					wanted_items.add(entry.student_id)
+			studentScheduleResults = PersonalInfo.objects.filter(student_id__in=wanted_items)
 		elif siteInfoSearch:
 			temp = PersonalInfo.objects.none()
 			for site in siteInfoSearch:
@@ -227,6 +262,11 @@ def student_placement_search(request):
 					person = PersonalInfo.objects.filter(Q(student_id=student.personal_info.student_id))
 					temp = person.union(temp)
 			siteInfoResults = temp
+			wanted_items = set()
+			for entry in siteInfoResults:
+				if entry.appdata_set.filter(Q(placement="True")).count() > 0:
+					wanted_items.add(entry.student_id)
+			siteInfoResults = PersonalInfo.objects.filter(student_id__in=wanted_items)
 	else:
 		# Advanced search
 		results = PersonalInfo.objects.all()
@@ -251,6 +291,7 @@ def student_placement_search(request):
 			whichSearch = 2
 		if sitename:
 			print("site name")
+			sitename = sitename.strip()
 			wanted_items = set()
 			for entry in results:
 				placements = entry.studentplacement_set.all()
@@ -289,6 +330,12 @@ def student_placement_search(request):
 						wanted_items.add(entry.student_id)
 			results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 			whichSearch = 2
+
+		wanted_items = set()
+		for entry in results:
+			if entry.appdata_set.filter(Q(placement="True")).count() > 0:
+				wanted_items.add(entry.student_id)
+		results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 
 		personalInfoResults = results
 
