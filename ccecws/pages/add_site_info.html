@@ -4,6 +4,9 @@
 
 {% block content %}
 <div class="lead">
+    <h1>Add a New Site</h1>
+    <p>Please fill out the following form regarding the site you would like to add to the CCEC's database.</p>
+    <hr>
     <form action="." method="POST"> {% csrf_token %}
         {{ site_info_form|crispy }}
 

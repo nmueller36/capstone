@@ -9,17 +9,29 @@
     <h4 class="card-title">Welcome, Admin!</h4>
     <p class="card-text">As an Administrator,
     you can search through student and site info, view student and site profiles,
-    place students at a work study site, and add sites to the work study program.</p>
+    place students at a work-study site, and add sites to the work-study program.</p>
     <p class="card-text"><strong>To have a new site enter their information, have them
-    navigate to this link: [INSERT LINK ONCE HOSTED]</strong></p>
+    navigate to this link: <a href="{% url 'workstudy:add_site_info' %}">[INSERT LINK ONCE HOSTED]</a></strong></p>
     <!-- <a href="{% url 'workstudy:add_site_info' %}" class="card-link">Adding a Site</a>
     <a href="#" class="card-link">Another link</a> -->
   </div>
 </div>
 {% endif %}
   <h3>Welcome to the Community and Civic Engagement Center (CCEC)! </h3>
-  <strong>You can submit your work-study application here.</strong>
-  <p>Here is the list of all of our current work-study sites:</p>
+  <p>If you are a <strong>student</strong> interested in applying for work-study through the CCEC,
+  please go to the Application tab above to fill out the interest form.</p>
+  <p>If you are a <strong>CCEC Administrator</strong>, please login.</p>
+  <div class="card mt-3 mb-3">
+    <div class="card-body">
+      <h4 class="card-title">Contact Us</h4>
+      <p class="card-text"><strong>Phone:</strong> 215-572-4000</p>
+      <p class="card-text"><strong>Email:</strong> ccec@arcadia.edu</p>
+      <p class="card-text"><strong>Community Service Director:</strong> Cindy Rubino</p>
+      <p class="card-text"><strong>Address:</strong> <br>Community & Civic Engagement <br>2005 Church Rd</p>
+       <p class="card-text">For more information, visit the CCEC website <a href="https://www.arcadia.edu/life-arcadia/activities-organizations/community-civic-engagement">here.</a></p>
+    </div>
+  </div>
+<h4>Here is a list of all of our current work-study sites:</h4>
 <strong>Adults with Developmental Disabilities</strong>
   <p>ADD is a non-profit organization dedicated to assisting adults with disabilities ranging from Familial Dysautonomia to Autism. Their mission is to nurture personal relationships, positive work habits, and greater independence for developmentally disabled adults. They also work to support caregivers and try to increase acceptance in this area. Work-study students are required to assist facilitators during weekly discussion groups, go on weekly educational trips, and update member policies and procedural records. </p>
   <strong>Awbury Arboretum</strong>

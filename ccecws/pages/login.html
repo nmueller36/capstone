@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="lead">
+    <p>If you are a CCEC Administrator, please login here.</p>
   <form action="{% url 'workstudy:process_login' %}" method="POST"> {% csrf_token %}
     <div class="form-group">
       <label for="exampleInputUsername">Username</label>

@@ -4,12 +4,15 @@
 
 {% block content %}
 <div class="lead">
+    <h1>Work-Study Application</h1>
+    <p>Thank you for your interest in applying for work-study through the CCEC! Please fill out this form to complete your application.</p>
+    <hr>
     <form action="." method="POST"> {% csrf_token %}
         {{ personal_info_form|crispy }}
         {{ app_data_form|crispy }}
         <p> Please numerically rank your choices for a site placement in order of preference, with 1 being your ideal placement.<p>
           {{site_placement_rank_form|crispy}}
-<p>Please add the days and hours you are availble to work. Remember to consider how much assignments and papers you will have to complete and to save some time for them. Only put down days and hours you know you will be avavilbe to work. Work study shifts are a <strong><u>minimum of an hour and a half.</strong></u> Since most sites are off-campus, please leave a little time availbleilbe to get to your site. Please click Add Another Day if you would like to add to your availibity.  </p>
+<p>Please add the days and hours you are available to work. Remember to consider how many assignments and papers you will have to complete and to save some time for them. Only put down days and hours you know you will be available to work. Work-study shifts are a <u><strong>minimum of an hour and a half.</strong></u> Since most sites are off campus, please leave a little time available to get to your site. Please click Add Another Day if you would like to add to your availability.  </p>
            <!-- <div class="form-group" id="availability-container"> -->
            <div class="form-group">
              <a href="javascript:;" id="add-new-day" >Add Another Day</a>
