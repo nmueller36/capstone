@@ -6,10 +6,14 @@
 <div class="lead">
   {% for info in allPersonalInfo %}
     <h1>{{info.preferred_name}} {{info.last_name}}</h1>
-    {% for info in allAppData %}
-      {% if info.placement != True %}
-          <a class="btn btn-primary" href="/placement" role="button">Place</a>
-      {% endif %}
+    {% for data in allAppData %}
+    {% if data.placement != True %}
+    <form action="/placement/" method="POST">{% csrf_token %}
+      <input type="hidden" name="student_name" value="{{ info.preferred_name }} {{ info.last_name }}">
+      <input type="hidden" name="student_id" value="{{ info.student_id }}">
+      <button class="btn btn-primary" name="submit_placement">Place</button>
+    </form>
+    {% endif %}
     {% endfor %}
     <a class="btn btn-primary" href="/user/info/edit/?id={{ info.student_id }}" role="button">Edit</a>
     <h3>Application Info</h3>

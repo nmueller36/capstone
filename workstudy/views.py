@@ -385,31 +385,46 @@ def add(request):
 
 
 def placement(request):
-	if request.method == "POST":
+	#if request.method == "GET":
+	#id = request.GET.get('stud_id')
+	#id = int(request.GET.get('stud_id'))
+	#allPersonalInfo = PersonalInfo.objects.all().filter(student_id = id)
+	#messages.info(id)
+		#student_personal_info = PersonalInfo.objects.all().filter(student_id = id)
+		#student_app_data = AppData.objects.all().filter(personal_info__student_id = id)
+
+	if request.method == "POST" and 'placing_student' in request.POST:
 		student_placement_form = StudentPlacementForm(request.POST)
-		#id = int(request.POST.get('id'))
 		#student = PersonalInfo(student_id=id)
 		student_avail_days = request.POST.getlist('student_days[]')
 		student_avail_start_time = request.POST.getlist('student_start_time[]')
 		student_avail_end_time = request.POST.getlist('student_end_time[]')
 
+		student_id = int(request.POST.get('student_id'))
+		personal_info_instance = PersonalInfo.objects.get(student_id = student_id)
+		app_data_instance = AppData.objects.get(personal_info__student_id = student_id)
+
 		if student_placement_form.is_valid():
 			student_placement_instance = student_placement_form.save(commit=False)
+			student_placement_instance.personal_info = personal_info_instance
+			student_placement_instance.app_data = app_data_instance
 			student_placement_instance.save()
 
 			for i in range(len(student_avail_days)):
 				if student_avail_days[i] and student_avail_start_time[i] and student_avail_end_time[i]:
-					student_availability = StudentSchedule(student_placement=student_placement_instance, day=student_avail_days[i], start_time=student_avail_start_time[i], end_time=app_avail_end_time[i])
+					student_availability = StudentSchedule(student_placement=student_placement_instance, day=student_avail_days[i], start_time=student_avail_start_time[i], end_time=student_avail_end_time[i])
 					student_availability.save()
 		else:
 			messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
 			return redirect('workstudy:placement')
 
-	else:
+	elif request.method == "POST" and 'submit_placement' in request.POST:
 		# show the forms
-		context = {}
+		context = {} #'allPersonalInfo': allPersonalInfo,}
 		student_placement_form = StudentPlacementForm()
 		student_schedule_form = StudentScheduleForm()
+		context['student_id'] = request.POST.get('student_id')
+		context['student_name'] = request.POST.get('student_name')
 		context['student_placement_form'] = student_placement_form
 		context['student_schedule_form'] = student_schedule_form
 		return render(request, 'placement.html', context)
