@@ -88,12 +88,10 @@ document.getElementById('add-new-day').onclick = function () {
             <input name="student_end_time[]" type="time">
           </td>
             `;
-
     let container = document.getElementById('availability-container');
     let div = document.createElement('tr');
     div.innerHTML = template;
     container.insertBefore(div, container.firstChild);
-
     i++;
 
 

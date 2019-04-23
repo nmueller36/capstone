@@ -153,3 +153,40 @@ class StudentScheduleForm(forms.ModelForm):
         def __init__(self, *args, **kwargs):
 
             super(StudentScheduleForm, self).__init__(*args, **kwargs)
+
+class EditStudentPerForm(forms.ModelForm):
+    class Meta:
+        model = PersonalInfo
+        fields = '__all__'
+        # exclude field(s) that the users should not see on the page
+        exclude = ('student_id',)
+        
+        def __init__(self, *args, **kwargs):
+            super(EditStudentPerForm, self).__init__(*args, **kwargs)
+
+class EditStudentAppForm(forms.ModelForm):
+    class Meta:
+        model = AppData;
+        fields = '__all__'
+        # exclude field(s) that the users should not see on the page
+        exclude = ('personal_info', 'placement')
+        def __init__(self, *args, **kwargs):
+            super(EditStudentAppForm, self).__init__(*args, **kwargs)
+
+class EditStudentAvailForm(forms.ModelForm):
+    class Meta:
+        model = AppAvailability;
+        fields = '__all__'
+        # exclude field(s) that the users should not see on the page
+        exclude = ('site_info',)
+        def __init__(self, *args, **kwargs):
+            super(EditStudentAvailForm, self).__init__(*args, **kwargs)
+
+class EditStudentRankForm(forms.ModelForm):
+    class Meta:
+        model = SitePlacementRank;
+        fields = '__all__'
+        # exclude field(s) that the users should not see on the page
+        exclude = ('app_data',)
+        def __init__(self, *args, **kwargs):
+            super(EditStudentRankForm, self).__init__(*args, **kwargs)

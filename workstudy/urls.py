@@ -19,7 +19,7 @@ urlpatterns = [
 	url(r'^add_site_info/completed/$', views.new_site_completed, name="new_site"),
 	url(r'^user/info/$', views.display_student, name="display_student"),
 	url(r'^site/info/$', views.display_site, name="display_site"),
-	url(r'^user/info/edit/$', views.edit_student, name="edit_student")#,
-	#url(r'^site/info/.*/edit', views.edit_site, name="edit_site")
+	url(r'^user/info/edit/$', views.edit_student, name="edit_student"),
+	#url(r'^user/info/edit/completed/$', views.edit_complete, name="edit_completed")
 
 ]
