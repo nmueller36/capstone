@@ -137,6 +137,7 @@ class StudentPlacementForm (forms.ModelForm):
     class Meta:
         model = StudentPlacement
         fields = '__all__'
+        exclude = ('personal_info', 'app_data',)
 
         def __init__(self, *args, **kwargs):
 

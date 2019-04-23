@@ -37,6 +37,53 @@
   {% endif %}
   <h3>Advanced Search</h3>
   <p>Filter search by fields.</p>
+  <div class="lead form-inline">
+      <form action="{% url 'workstudy:site_info_search' %}" method="GET">
+          <div class="form-group">
+            <label for="s" class="mr-sm-2">Site Name: </label>
+            <input class="form-control mb-2 mr-sm-2" type="text" name="s" id="s" value="{{request.GET.s}}">
+          </div>
+          <div class="form-group">
+            <label for="t">Day: </label>
+            <select class="form-control mb-2 mr-sm-2" name="t" id="t" value="{{request.GET.t}}">
+              <option disabled selected value>-- select an option -- </option>
+              <option>Monday</option>
+              <option>Tuesday</option>
+              <option>Wednesday</option>
+              <option>Thursday</option>
+              <option>Friday</option>
+              <option>Saturday</option>
+              <option>Sunday</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="u" class="mr-sm-2">Start time: </label>
+            <input class="form-control mb-2 mr-sm-2" type="time" name="u" id="u" value="{{request.GET.u}}">
+          </div>
+          <div class="form-group">
+            <label for="v" class="mr-sm-2">End time: </label>
+            <input class="form-control mb-2 mr-sm-2" type="time" name="v" id="v" value="{{request.GET.v}}">
+          </div>
+          <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Search</button>
+      </form>
+    </div>
+    <hr>
+    {% if searchType == 2 %}
+    <div class="lead">
+      <p>Search results:</p>
+      <div class="card">
+        <ul class="list-group list-group-flush">
+          {% for obj in SiteInfo %}
+            <li class="list-group-item"><a href="/site/info/?name={{ obj.site_name }}">{{obj.site_name}}</a></li>
+          {% endfor %}
+          {% for obj in SiteAvail %}
+          <li class="list-group-item">  {{obj.site_name}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <hr>
+    {% endif %}
 </div>
 
 {% endblock %}
