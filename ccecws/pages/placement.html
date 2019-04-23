@@ -3,10 +3,20 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<input type="hidden" name="id" value="{{user.id}}">
+<!-- <input type="hidden" name="id" value="{{info.personal_info.id}}"> -->
+<!--var getID = window.location.href.split('=');
+var stud_id = getID[getID.length - 1];
+<label> stud_id</label> -->
+{% for info in allPersonalInfo %}
+<input name = "stud_id" value = "{{ info.student_id }} " >
+{% endfor %}
+
 
 <div class="lead">
 <form action="." method="POST"> {% csrf_token %}
+  <!--  <label>{{info.personal_info.id}}</label> -->
+  <input type="hidden" name="student_id" value="{{ student_id }}">
+  <label> Place {{student_name}}</label>
     {{ student_placement_form|crispy }}
     <p>Please add the student's work schedule below.</p>
     <div class="form-group">
@@ -45,7 +55,7 @@
 
        <!-- <button class="btn btn-success add-form-row">+</button> -->
     <div class="form-group">
-     <button class="btn btn-primary" type="submit">Submit</button>
+     <button class="btn btn-primary" type="submit" name="placing_student">Submit</button>
     </div>
   </form>
   </div>
@@ -54,7 +64,6 @@
 
 {% block customjs %}
 <script type="text/javascript">
-
 let i = 2;
 document.getElementById('add-new-day').onclick = function () {
   let template = `
@@ -79,13 +88,14 @@ document.getElementById('add-new-day').onclick = function () {
             <input name="student_end_time[]" type="time">
           </td>
             `;
-
     let container = document.getElementById('availability-container');
     let div = document.createElement('tr');
     div.innerHTML = template;
     container.insertBefore(div, container.firstChild);
-
     i++;
 }
+</script>
+
+
 </script>
 {% endblock %}

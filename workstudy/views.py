@@ -321,7 +321,6 @@ def placement(request):
 		context['student_schedule_form'] = student_schedule_form
 		return render(request, 'placement.html', context)
 
-
 def display_student(request):
 	if request.method=='GET':
 		id = request.GET.get('id')
@@ -342,17 +341,70 @@ def edit_student(request):
 	if request.method=='GET':
 		id = request.GET.get('id')
 		if not id:
-			return render(request, 'search.html')
+			return render(request, 'display_student.html')
 		else:
-			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = id)
-			allAppData = AppData.objects.all().filter(personal_info__student_id = id)
-			allAppAvail = AppAvailability.objects.all().filter(app_data__personal_info__student_id = id)
-			context = {
-				'allPersonalInfo': allPersonalInfo,
-				'allAppData': allAppData,
-				'allAppAvail': allAppAvail
-			}
-			return render(request, 'edit_student.html', context)
+			#code to just display info
+			# name = PersonalInfo.objects.get(student_id = id)
+			# allPersonalInfo = PersonalInfo.objects.all().filter(student_id = id)
+			# allAppData = AppData.objects.all().filter(personal_info__student_id = id)
+			# allAppAvail = AppAvailability.objects.all().filter(app_data__personal_info__student_id = id)
+			# context = {
+			# 	'allPersonalInfo': allPersonalInfo,
+			# 	'allAppData': allAppData,
+			# 	'allAppAvail': allAppAvail
+			# }
+			if request.method == "POST":
+				details = PersonalInfo.objects.get(student_id = id)
+				per_info = EditStudentPerForm(request.POST, instance = details)
+				# app_info = EditStudentAppForm(request.POST)
+				# ranking_info = EditStudentRankForm(request.POST)
+				# avail_info = EditStudentAvailForm(request.POST)
+				# app_availability_form = AppAvailabilityForm(request.POST)
+				# app_avail_days = request.POST.getlist('days[]')
+				# app_avail_start_time = request.POST.getlist('start_time[]')
+				# app_avail_end_time = request.POST.getlist('end_time[]')
+				# app_availbility_modelformset = AppAvailabilityModelFormset(request.POST) #, request.FILES, prefix = 'availility')
+				# formset = AuthorFormset(request.POST)
+
+				if per_info.is_valid(): #and app_info.is_valid() and site_placement_rank_form.is_valid():
+					per_info_instance = per_info.save(commit=False)
+					#app_info_instance = app_info.save(commit=False)
+					#ranking_info_instance = ranking_info.save(commit=False)
+					# app_availbility_instance = app_availability_form.save(commit=False)
+					# here you can add more fields or change them the way you want, after that you will save them
+					#app_info_instance.personal_info = per_info_instance
+					#ranking_info_instance.app_data = app_info_instance
+					#app_availbility_instance.app_data = app_data_instance
+
+					per_info_instance.save()
+					#app_info_instance.save()
+					#ranking_info_instance.save()
+					# messages.info(request, str(app_avail_days))
+					# for i in range(len(app_avail_days)):
+					# 	if app_avail_days[i] and app_avail_start_time[i] and app_avail_end_time[i]:
+					# 		user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
+					# 		user_availability.save()
+					return redirect('workstudy:edit-completed')
+				# if the form validation failed, for now just show the application form again and show the error
+				else:
+					messages.warning(request, 'You have changed information incorrectly, please try dagain. It has not been saved.')
+					return redirect('workstudy:display_student')
+			else:
+				# show the forms
+				per_info_form = EditStudentPerForm()
+				context = {
+					'allPersonalInfo': allPersonalInfo,
+					'per_info_form': per_info_form
+				}
+
+				# app_info = EditStudentAppForm()
+				# ranking_info = EditStudentRankForm()
+				# avail_info = EditStudentAvailForm()
+				#context['per_info'] = per_info
+				# context['app_info'] = app_info
+				# context['ranking_info'] = ranking_info
+				# context['avail_info'] = avail_info
+				return render(request, 'edit_student.html', context)
 
 def display_site(request):
 	if request.method=='GET':
@@ -360,13 +412,13 @@ def display_site(request):
 		if not name:
 			return render(request, 'site_info_search.html')
 		else:
-			allSiteInfo = SiteInfo.objects.all().filter(site_name = 'name')
-			# allSiteAvail = SiteAvailability.objects.all().filter(site_info__site_name = 'name')
+			allSiteInfo = SiteInfo.objects.all().filter(site_name = name)
+			allSiteAvail = SiteAvailability.objects.all().filter(site_info__site_name = name)
 			context = {
 				'allSiteInfo': allSiteInfo,
-				# 'allSiteAvail': allSiteAvail
+				'allSiteAvail': allSiteAvail
 			}
-			return render(request, 'display_student.html', context)
+			return render(request, 'display_site.html', context)
 
 def application(request):
 	# template_name = 'pages/create_normal.html'
@@ -474,3 +526,6 @@ def site_information (request):
 			context['site_availability_form'] = site_availability_form
 			return render(request, 'add_site_info.html', context)
 	return HttpResponseRedirect(reverse('workstudy:login'))
+
+def edit_complete(request):
+	return render(request, "edit_complete.html", {})
