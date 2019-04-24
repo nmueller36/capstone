@@ -17,6 +17,10 @@
 
   {% endfor %}
   {{ per_info_form|crispy }}
+  {{app_data_info_form|crispy}}
+  {{app_avail_info_form}}
+  {{site_rank_info_form|crispy}}
+  {{student_placement_form|crispy}}
   <button class="btn btn-primary" type="submit" name = "edit_student">Submit</button>
   </form>
 

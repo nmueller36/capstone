@@ -14,7 +14,7 @@ class AppDataForm (forms.ModelForm):
         model = AppData
         fields = '__all__'
         # exclude field(s) that the users should not see on the page
-        exclude = ('personal_info', 'placement')
+        exclude = ('personal_info', 'placement','timeStamp',)
 
 
     def __init__(self, *args, **kwargs):
@@ -160,7 +160,7 @@ class EditStudentPerForm(forms.ModelForm):
         fields = '__all__'
         # exclude field(s) that the users should not see on the page
         exclude = ('student_id',)
-        
+
         def __init__(self, *args, **kwargs):
             super(EditStudentPerForm, self).__init__(*args, **kwargs)
 
@@ -190,3 +190,19 @@ class EditStudentRankForm(forms.ModelForm):
         exclude = ('app_data',)
         def __init__(self, *args, **kwargs):
             super(EditStudentRankForm, self).__init__(*args, **kwargs)
+
+class EditStudentPlacementForm(forms.ModelForm):
+    class Meta:
+        model = StudentPlacement;
+        fields = '__all__'
+        exclude = ('personal_info', 'app_data',)
+        def __init__(self, *args, **kwargs):
+            super(EditStudentPlacementForm, self).__init__(*args, **kwargs)
+
+class EditStudentScheduleForm(forms.ModelForm):
+    class Meta:
+        model = StudentSchedule;
+        fields = '__all__'
+        exclude = ('student_placement',)
+        def __init__(self, *args, **kwargs):
+            super(EditStudentScheduleForm, self).__init__(*args, **kwargs)
