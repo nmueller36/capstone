@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityForm, SiteAvailabilityForm, StudentPlacementForm, StudentScheduleForm
+from .forms import PersonalInfoForm, AppDataForm, SitePlacementRankForm, SiteInfoForm, AppAvailabilityForm, SiteAvailabilityForm, StudentPlacementForm, StudentScheduleForm, EditStudentPerForm
 from django.db.models import Q
 from itertools import chain
 import datetime
@@ -440,7 +440,6 @@ def placement(request):
 		#messages.info(id)
 			#student_personal_info = PersonalInfo.objects.all().filter(student_id = id)
 			#student_app_data = AppData.objects.all().filter(personal_info__student_id = id)
-
 		if request.method == "POST" and 'placing_student' in request.POST:
 			student_placement_form = StudentPlacementForm(request.POST)
 			#student = PersonalInfo(student_id=id)
@@ -455,6 +454,8 @@ def placement(request):
 			if student_placement_form.is_valid():
 				student_placement_instance = student_placement_form.save(commit=False)
 				student_placement_instance.personal_info = personal_info_instance
+				app_data_instance.placement = True
+				app_data_instance.save()
 				student_placement_instance.app_data = app_data_instance
 				student_placement_instance.save()
 
@@ -462,6 +463,8 @@ def placement(request):
 					if student_avail_days[i] and student_avail_start_time[i] and student_avail_end_time[i]:
 						student_availability = StudentSchedule(student_placement=student_placement_instance, day=student_avail_days[i], start_time=student_avail_start_time[i], end_time=student_avail_end_time[i])
 						student_availability.save()
+				messages.info(request, 'Thank you for submitting! The student has been placed.')
+				return redirect('workstudy:placement')
 			else:
 				messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
 				return redirect('workstudy:placement')
@@ -488,84 +491,48 @@ def display_student(request):
 				allPersonalInfo = PersonalInfo.objects.all().filter(student_id = id)
 				allAppData = AppData.objects.all().filter(personal_info__student_id = id)
 				allAppAvail = AppAvailability.objects.all().filter(app_data__personal_info__student_id = id)
+				allPlacement = StudentPlacement.objects.all().filter(personal_info__student_id = id)
 				context = {
 					'allPersonalInfo': allPersonalInfo,
 					'allAppData': allAppData,
-					'allAppAvail': allAppAvail
+					'allAppAvail': allAppAvail,
+					'allPlacement': allPlacement
 				}
 				return render(request, 'display_student.html', context)
 	return HttpResponseRedirect(reverse('workstudy:login'))
 
 def edit_student(request):
 	if request.user.is_authenticated:
-#
-		if request.method=='GET':
-			id = request.GET.get('id')
-			if not id:
-				return render(request, 'display_student.html')
+		if request.method == "POST"  and 'edit_student' in request.POST:
+			student_id = int(request.POST.get('student_id'))
+			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = student_id)
+			#allAppData = AppData.objects.get(personal_info__student_id = student_id)
+			details = PersonalInfo.objects.get(student_id = student_id)
+			per_info = EditStudentPerForm(request.POST, instance = details)
+			#app_info form = EditStudentAppForm(request.POST, instance = details)
+
+
+
+			if per_info.is_valid(): #and app_info.is_valid() and site_placement_rank_form.is_valid():
+				per_info_instance = per_info.save(commit=False)
+
+				per_info_instance.save()
+				return redirect('workstudy:edit_completed')
 			else:
-			#code to just display info
-			# name = PersonalInfo.objects.get(student_id = id)
-			# allPersonalInfo = PersonalInfo.objects.all().filter(student_id = id)
-			# allAppData = AppData.objects.all().filter(personal_info__student_id = id)
-			# allAppAvail = AppAvailability.objects.all().filter(app_data__personal_info__student_id = id)
-			# context = {
-			# 	'allPersonalInfo': allPersonalInfo,
-			# 	'allAppData': allAppData,
-			# 	'allAppAvail': allAppAvail
-			# }
-				if request.method == "POST":
-					details = PersonalInfo.objects.get(student_id = id)
-					per_info = EditStudentPerForm(request.POST, instance = details)
-					# app_info = EditStudentAppForm(request.POST)
-					# ranking_info = EditStudentRankForm(request.POST)
-					# avail_info = EditStudentAvailForm(request.POST)
-					# app_availability_form = AppAvailabilityForm(request.POST)
-					# app_avail_days = request.POST.getlist('days[]')
-					# app_avail_start_time = request.POST.getlist('start_time[]')
-					# app_avail_end_time = request.POST.getlist('end_time[]')
-					# app_availbility_modelformset = AppAvailabilityModelFormset(request.POST) #, request.FILES, prefix = 'availility')
-					# formset = AuthorFormset(request.POST)
-
-					if per_info.is_valid(): #and app_info.is_valid() and site_placement_rank_form.is_valid():
-						per_info_instance = per_info.save(commit=False)
-						#app_info_instance = app_info.save(commit=False)
-						#ranking_info_instance = ranking_info.save(commit=False)
-						# app_availbility_instance = app_availability_form.save(commit=False)
-						# here you can add more fields or change them the way you want, after that you will save them
-						#app_info_instance.personal_info = per_info_instance
-						#ranking_info_instance.app_data = app_info_instance
-						#app_availbility_instance.app_data = app_data_instance
-
-						per_info_instance.save()
-						#app_info_instance.save()
-						#ranking_info_instance.save()
-						# messages.info(request, str(app_avail_days))
-						# for i in range(len(app_avail_days)):
-						# 	if app_avail_days[i] and app_avail_start_time[i] and app_avail_end_time[i]:
-						# 		user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
-						# 		user_availability.save()
-						return redirect('workstudy:edit-completed')
-						# if the form validation failed, for now just show the application form again and show the error
-					else:
-						messages.warning(request, 'You have changed information incorrectly, please try dagain. It has not been saved.')
-						return redirect('workstudy:display_student')
-				else:
-						# show the forms
-					per_info_form = EditStudentPerForm()
-					context = {
-					'allPersonalInfo': allPersonalInfo,
-					'per_info_form': per_info_form
-					}
-
-					# app_info = EditStudentAppForm()
-					# ranking_info = EditStudentRankForm()
-					# avail_info = EditStudentAvailForm()
-					#context['per_info'] = per_info
-					# context['app_info'] = app_info
-					# context['ranking_info'] = ranking_info
-					# context['avail_info'] = avail_info
-					return render(request, 'edit_student.html', context)
+				messages.warning(request, 'You have changed information incorrectly, please try again. It has not been saved.')
+				return redirect('workstudy:edit_student')
+		elif request.method == "POST" and 'submit_edit' in request.POST:
+			context = {}
+			student_id = int(request.POST.get('student_id'))
+			context['student_id'] = request.POST.get('student_id')
+			#per_info_form = EditStudentPerForm(instance = PersonalInfo.objects.get(student_id = student_id))
+			context['per_info_form'] = EditStudentPerForm(instance = PersonalInfo.objects.get(student_id = student_id))
+			#contex['app_info_form'] = EditStudentAppForm(instance = PersonalInfo.objects.get(student_id = student_id))
+			#context['app_avail_info_form'] = EditStudentAvailForm(instance = PersonalInfo.objects.get(student_id = student_id))
+			context['allPersonalInfo'] = PersonalInfo.objects.all().filter(student_id = student_id)
+			#context['allAppData'] = AppData.objects.get(personal_info__student_id = student_id)
+			#context['allAppAvail'] = AppAvailability.objects.get(app_data__personal_info__student__id = student_id)
+			return render(request, 'edit_student.html', context)
 	return HttpResponseRedirect(reverse('workstudy:login'))
 
 def edit_complete(request):
@@ -591,52 +558,75 @@ def display_site(request):
 
 def application(request):
 	# template_name = 'pages/create_normal.html'
-	if request.method == "POST":
-		personal_info_form = PersonalInfoForm(request.POST)
-		app_data_form = AppDataForm(request.POST)
-		site_placement_rank_form = SitePlacementRankForm(request.POST)
-		# app_availability_form = AppAvailabilityForm(request.POST)
-		app_avail_days = request.POST.getlist('days[]')
-		app_avail_start_time = request.POST.getlist('start_time[]')
-		app_avail_end_time = request.POST.getlist('end_time[]')
-		# app_availbility_modelformset = AppAvailabilityModelFormset(request.POST) #, request.FILES, prefix = 'availility')
-		# formset = AuthorFormset(request.POST)
+	if request.user.is_authenticated:
+		if request.method == "POST":
+			personal_info_form = PersonalInfoForm(request.POST)
+			app_data_form = AppDataForm(request.POST)
+			site_placement_rank_form = SitePlacementRankForm(request.POST)
+			# app_availability_form = AppAvailabilityForm(request.POST)
+			app_avail_days = request.POST.getlist('days[]')
+			app_avail_start_time = request.POST.getlist('start_time[]')
+			app_avail_end_time = request.POST.getlist('end_time[]')
+			# app_availbility_modelformset = AppAvailabilityModelFormset(request.POST) #, request.FILES, prefix = 'availility')
+			# formset = AuthorFormset(request.POST)
 
-		if personal_info_form.is_valid() and app_data_form.is_valid() and site_placement_rank_form.is_valid():
-			personal_info_instance = personal_info_form.save(commit=False)
-			app_data_instance = app_data_form.save(commit=False)
-			site_placement_rank_instance = site_placement_rank_form.save(commit=False)
-			# app_availbility_instance = app_availability_form.save(commit=False)
-			# here you can add more fields or change them the way you want, after that you will save them
-			app_data_instance.personal_info = personal_info_instance
-			site_placement_rank_instance.app_data = app_data_instance
-			#app_availbility_instance.app_data = app_data_instance
+			if app_data_form.is_valid() and site_placement_rank_form.is_valid():
+				personal_info_instance = personal_info_form.save(commit=False)
+				app_data_instance = app_data_form.save(commit=False)
+				site_placement_rank_instance = site_placement_rank_form.save(commit=False)
+				# app_availbility_instance = app_availability_form.save(commit=False)
+				# here you can add more fields or change them the way you want, after that you will save them
+				app_data_instance.personal_info = personal_info_instance
+				site_placement_rank_instance.app_data = app_data_instance
+				#app_availbility_instance.app_data = app_data_instance
+				if PersonalInfo.objects.filter(student_id = personal_info_instance.student_id).exists():
+					#app_data_instance = app_data_form.save(commit=False)
+					#	site_placement_rank_instance = site_placement_rank_form.save(commit=False)
+						# app_availbility_instance = app_availability_form.save(commit=False)
+						# here you can add more fields or change them the way you want, after that you will save them
+					personal_info_instance = PersonalInfo.objects.get(student_id = personal_info_form.student_id)
+					#app_data_instance.personal_info = personal_info_instance
+					#site_placement_rank_instance.app_data = app_data_instance
+						#app_availbility_instance.app_data = app_data_instance
 
-			personal_info_instance.save()
-			app_data_instance.save()
-			site_placement_rank_instance.save()
-			# messages.info(request, str(app_avail_days))
-			for i in range(len(app_avail_days)):
-				if app_avail_days[i] and app_avail_start_time[i] and app_avail_end_time[i]:
-					user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
-					user_availability.save()
-			return redirect('workstudy:application-completed')
-		# if the form validation failed, for now just show the application form again and show the error
+						#personal_info_instance.save()
+					app_data_instance.save()
+					site_placement_rank_instance.save()
+						# messages.info(request, str(app_avail_days))
+					for i in range(len(app_avail_days)):
+						if app_avail_days[i] and app_avail_start_time[i] and app_avail_end_time[i]:
+							user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
+							user_availability.save()
+
+					return redirect('workstudy:application-completed')
+
+				else:
+					personal_info_instance.save()
+					app_data_instance.save()
+					site_placement_rank_instance.save()
+				# messages.info(request, str(app_avail_days))
+				for i in range(len(app_avail_days)):
+					if app_avail_days[i] and app_avail_start_time[i] and app_avail_end_time[i]:
+						user_availability = AppAvailability(app_data=app_data_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
+						user_availability.save()
+				return redirect('workstudy:application-completed')
+			# if the form validation failed, for now just show the application form again and show the error
+			else:
+				messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
+				return redirect('workstudy:application')
 		else:
-			messages.warning(request, 'You filled up the form incorrectly, please try again. It has not been saved.')
-			return redirect('workstudy:application')
-	else:
-		# show the forms
-		context = {}
-		personal_info_form = PersonalInfoForm()
-		app_data_form = AppDataForm()
-		site_placement_rank_form = SitePlacementRankForm()
-		app_availability_form = AppAvailabilityForm()
-		context['personal_info_form'] = personal_info_form
-		context['app_data_form'] = app_data_form
-		context['site_placement_rank_form'] = site_placement_rank_form
-		context['app_availability_form'] = app_availability_form
-		return render(request, 'application.html', context)
+			# show the forms
+			context = {}
+			personal_info_form = PersonalInfoForm()
+			app_data_form = AppDataForm()
+			site_placement_rank_form = SitePlacementRankForm()
+			app_availability_form = AppAvailabilityForm()
+			context['personal_info_form'] = personal_info_form
+			context['app_data_form'] = app_data_form
+			context['site_placement_rank_form'] = site_placement_rank_form
+			context['app_availability_form'] = app_availability_form
+			return render(request, 'application.html', context)
+	return render(request, "login.html", {})
 
 
 def site_info_added(request):
@@ -650,7 +640,7 @@ def user_logout(request):
 
 def login_page(request):
 	if request.user.is_authenticated:
-		return render(request, 'workstudy/index.html', {})
+		return render(request, 'index.html', {})
 	return render(request, "login.html", {})
 
 

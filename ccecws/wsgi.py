@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 
 import os, sys
 
-sys.path.append("/home/nicole/public_html")
+sys.path.append("/home/ccec/public_html")
 
 from django.core.wsgi import get_wsgi_application
 
