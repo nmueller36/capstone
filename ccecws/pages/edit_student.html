@@ -5,11 +5,20 @@
 {% block content %}
 <!-- Currently just another display page, stashed all actual editing progress temporarily -->
 <div class="lead">
-  <h1>EDITING</h1>
+
+  <form action="." method="POST"> {% csrf_token %}
+    <h1>EDITING</h1>
+      <input type="hidden" name="student_id" value="{{ student_id }}">
+      <label> Student ID: {{student_id}} </label>
   {% for info in allPersonalInfo %}
+<!--  <input type="hidden" name="student_id" value="{{ info.student_id }}">
+     <label> Student ID: {{info.student_id}} </label>-->
     <h1>{{info.preferred_name}} {{info.last_name}}</h1>
 
   {% endfor %}
   {{ per_info_form|crispy }}
+  <button class="btn btn-primary" type="submit" name = "edit_student">Submit</button>
+  </form>
 
+</div>
 {% endblock %}

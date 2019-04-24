@@ -7,15 +7,21 @@
   {% for info in allPersonalInfo %}
     <h1>{{info.preferred_name}} {{info.last_name}}</h1>
     {% for data in allAppData %}
-    {% if data.placement != True %}
-    <form action="/placement/" method="POST">{% csrf_token %}
-      <input type="hidden" name="student_name" value="{{ info.preferred_name }} {{ info.last_name }}">
-      <input type="hidden" name="student_id" value="{{ info.student_id }}">
-      <button class="btn btn-primary" name="submit_placement">Place</button>
-    </form>
-    {% endif %}
+      {% if data.placement != True %}
+      <form action="/placement/" method="POST">{% csrf_token %}
+        <input type="hidden" name="student_name" value="{{ info.preferred_name }} {{ info.last_name }}">
+        <input type="hidden" name="student_id" value="{{ info.student_id }}">
+        <button type="submit" class="btn btn-primary" name="submit_placement">Place</button>
+      </form>
+      {% endif %}
+      <form action="/edit_student/" method="POST">{% csrf_token %}
+        <input type="hidden" name="student_name" value="{{ info.preferred_name }} {{ info.last_name }}">
+        <input type="hidden" name="student_id" value="{{ info.student_id }}">
+        <button type="submit" class="btn btn-primary" name = "submit_edit">Edit</button>
+      </form>
     {% endfor %}
-    <a class="btn btn-primary" href="/user/info/edit/?id={{ info.student_id }}" role="button">Edit</a>
+
+  <!--  <a class="btn btn-primary" href="/user/info/edit/?id={{ info.student_id }}" role="button">Edit</a>-->
     <h3>Application Info</h3>
     <p>First name: {{info.first_name}}</p>
     <p>Preferred name: {{info.preferred_name}}</p>
@@ -53,10 +59,11 @@
       <p>Would like to keep same schedule: {{info.keep_schedule}}</p>
     {% endif %}
     <p>How they heard about CCEC: {{info.hear_about_ccec}}</p>
-    <p>Current Placement: {{info.placement}}</p>
     {% if info.placement == True %}
           <h3>Student Placement</h3>
           <p>This is where the placement info goes</p>
+    {% else %}
+      <p>Current Placement: None</p>
     {% endif %}
   {% endfor %}
   <h3>Student Availability</h3>
