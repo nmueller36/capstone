@@ -7,21 +7,21 @@
     <h1>{{allPersonalInfo.preferred_name}} {{allPersonalInfo.last_name}}</h1>
       <table>
         <tr>
+            <td>
+              <form action="/edit_student/" method="POST">{% csrf_token %}
+                <input type="hidden" name="student_name" value="{{ allPersonalInfo.preferred_name }} {{ allPersonalInfo.last_name }}">
+                <input type="hidden" name="student_id" value="{{ allPersonalInfo.student_id }}">
+                <button type="submit" class="btn btn-secondary" name = "submit_edit">Edit</button>
+              </form>
+            </td>
           <td style="width: 100px;">
-            {% if data.placement != True %}
+            {% if allAppData.placement != True %}
             <form action="/placement/" method="POST">{% csrf_token %}
               <input type="hidden" name="student_name" value="{{ allPersonalInfo.preferred_name }} {{ allPersonalInfo.last_name }}">
               <input type="hidden" name="student_id" value="{{ allPersonalInfo.student_id }}">
               <button type="submit" class="btn btn-primary" name="submit_placement">Place</button>
             </form>
             {% endif %}
-          </td>
-          <td>
-            <form action="/edit_student/" method="POST">{% csrf_token %}
-              <input type="hidden" name="student_name" value="{{ allPersonalInfo.preferred_name }} {{ allPersonalInfo.last_name }}">
-              <input type="hidden" name="student_id" value="{{ allPersonalInfo.student_id }}">
-              <button type="submit" class="btn btn-info" name = "submit_edit">Edit</button>
-            </form>
           </td>
       </tr>
       </table>

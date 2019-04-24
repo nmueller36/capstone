@@ -28,10 +28,10 @@
         <li class="list-group-item"><a href="/user/info/?id={{obj.student_id}}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
         {% for obj in AppData %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        <li class="list-group-item"><a href="/user/info/?id={{obj.student_id}}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
         {% for obj in AppAvail %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        <li class="list-group-item"><a href="/user/info/?id={{obj.student_id}}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
       </ul>
     </div>
@@ -96,25 +96,25 @@
     <p>Search results:</p>
     <div class="card">
 
-        {% for obj in items %}
+        <!-- {% for obj in items %} -->
         <!-- <div class="container"> -->
-          <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</button>
+          <!-- <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</button>
           <div id="demo" class="collapse">
             {{obj.first_name}}
             {{obj.last_name}}
-            {{obj.student_id}}
+            {{obj.student_id}} -->
           <!-- </div> -->
           </div>
-          {% endfor %}
+          <!-- {% endfor %} -->
       <ul class="list-group list-group-flush">
         {% for obj in PerInfo %}
         <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
         {% for obj in AppData %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
         {% for obj in AppAvail %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
       </ul>
     </div>

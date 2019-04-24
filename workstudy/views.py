@@ -192,12 +192,18 @@ def search(request):
 
 def student_placement_search(request):
 	if request.user.is_authenticated:
+		current_year = datetime.datetime.now().year
+		choices = [
+			("Spring " + str(current_year)),
+			("Fall " + str(current_year)),
+			("Spring " + str(current_year + 1))]
 		whichSearch = 0
 
 		general = request.GET.get('a')
 		firstname = request.GET.get('p')
 		lastname = request.GET.get('q')
 		email = request.GET.get('r')
+		semester = request.GET.get('x')
 		sitename = request.GET.get('s')
 		day = request.GET.get('t')
 		starttime = request.GET.get('u')
@@ -291,6 +297,14 @@ def student_placement_search(request):
 				emailSearch = results.filter(Q(email__icontains=email))
 				results = emailSearch
 				whichSearch = 2
+			if semester:
+				print("semester")
+				wanted_items = set()
+				for entry in results:
+					if entry.appdata_set.filter(Q(semester__icontains=semester)).count() > 0:
+						wanted_items.add(entry.student_id)
+				results = PersonalInfo.objects.filter(student_id__in=wanted_items)
+				whichSearch = 2
 			if sitename:
 				print("site name")
 				sitename = sitename.strip()
@@ -298,7 +312,7 @@ def student_placement_search(request):
 				for entry in results:
 					placements = entry.studentplacement_set.all()
 					for place in placements:
-						if place.site_info.site_name == sitename:
+						if (place.site_info.site_name).lower() == sitename.lower():
 							wanted_items.add(entry.student_id)
 				results = PersonalInfo.objects.filter(student_id__in=wanted_items)
 				whichSearch = 2
@@ -346,6 +360,7 @@ def student_placement_search(request):
 			'StudPlace': studentPlacementResults,
 			'StudSched': studentScheduleResults,
 			'SiteInfo': siteInfoResults,
+			'years': choices,
 			'searchType': whichSearch
 		}
 		return render(request, "student_placement_search.html", context)
