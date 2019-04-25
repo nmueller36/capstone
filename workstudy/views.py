@@ -500,10 +500,10 @@ def display_student(request):
 
 def edit_student(request):
 	if request.user.is_authenticated:
-		if request.method == "POST"  and 'edit_student' in request.POST:
+		if request.method == "POST"  and 'edit_student' in request.POST: #where the form is rendered
 			student_id = int(request.POST.get('student_id'))
 			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = student_id)
-			allAppData = AppData.objects.filter(personal_info__student_id = student_id).order_by('-timeStamp')[0]
+			allAppData = AppData.objects.filter(personal_info__student_id = student_id)
 			per_details = PersonalInfo.objects.get(student_id = student_id)
 			app_details = AppData.objects.get(personal_info__student_id = student_id)
 			per_info = EditStudentPerForm(request.POST, instance = per_details)
@@ -521,14 +521,10 @@ def edit_student(request):
 					app_instance = app_info.save(commit=False)
 					student_placement_instance = student_placement_info.save(commit=False)
 					student_schedule_instance = student_schedule_info.save(commit=False)
-
-
 					per_info_instance.save()
 					app_instance.save()
 					student_placement_instance.save()
 					student_schedule_instance.save()
-
-
 					return redirect('workstudy:edit_completed')
 
 				else:
@@ -549,7 +545,6 @@ def edit_student(request):
 					app_instance = app_info.save(commit=False)
 					app_avail_instance = app_avail_info.save(commit=False)
 					site_rank_instance = aite_rank_info.save(commit=False)
-
 					per_info_instance.save()
 					app_instance.save()
 					app_avail_instance.save()
@@ -561,7 +556,7 @@ def edit_student(request):
 					messages.warning(request, 'You have changed information incorrectly, please try again. It has not been saved.')
 					return redirect('workstudy:edit_student')
 
-		elif request.method == "POST" and 'submit_edit' in request.POST:
+		elif request.method == "POST" and 'submit_edit' in request.POST: # when edit button is clicked, this is what it displays
 			student_id = int(request.POST.get('student_id'))
 			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = student_id)
 			allAppData = AppData.objects.filter(personal_info__student_id = student_id).order_by('-timeStamp')[0]
@@ -569,24 +564,23 @@ def edit_student(request):
 			if allAppData.placement == True: #has placement
 				context = {}
 				context['per_info_form'] = EditStudentPerForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['app_info_form'] = EditStudentAppForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['student_placement_info_form'] = EditStudentPlacementForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['student_schedule_form'] = EditStudentAppForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['allPersonalInfo'] = PersonalInfo.objects.all().filter(student_id = student_id)
-				context['allAppData'] = AppData.objects.get(personal_info__student_id = student_id)
-				context['allStudentPlacement'] = StudentPlacement.objects.get(personal_info__student_id = student_id)
-				context['allStudentSchedule'] = StudentSchedule.objects.get(student_placement__personal_info__student_id = student_id)
-
+				context['app_info_form'] = EditStudentAppForm(instance = allAppData)
+				context['student_placement_info_form'] = EditStudentPlacementForm(instance = StudentPlacement.objects.get(app_data=allAppData))
+				data = StudentSchedule.objects.filter(student_placement__app_data__id=allAppData.id)
+				for d in data:
+					d.start_time = d.start_time.strftime('%H:%M:%S')
+					d.end_time = d.end_time.strftime('%H:%M:%S')
+				context['data'] = data
 			else:# no placcement
 				context = {}
 				context['per_info_form'] = EditStudentPerForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['app_info_form'] = EditStudentAppForm(instance = PersonalInfo.objects.get(student_id = student_id))
-			#context['student_id'] = request.POST.get('student_id')
-			#per_info_form = EditStudentPerForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['app_avail_info_form'] = EditStudentAvailForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['site_rank_info_form'] = EditStudentRankForm(instance = PersonalInfo.objects.get(student_id = student_id))
-				context['allPersonalInfo'] = PersonalInfo.objects.all().filter(student_id = student_id)
-				context['allAppData'] = AppData.objects.get(personal_info__student_id = student_id)
+				context['app_info_form'] = EditStudentAppForm(instance = allAppData)
+				context['site_rank_info_form'] = EditStudentRankForm(instance = SitePlacementRank.objects.get(app_data=allAppData))
+				app_avail = AppAvailability.objects.filter(app_data__id = allAppData.id)
+				for a in app_avail:
+					a.start_time = a.start_time.strftime('%H:%M:%S')
+					a.end_time = a.end_time.strftime('%H:%M:%S')
+				context['app_avail'] = app_avail
 
 			return render(request, 'edit_student.html', context)
 	return HttpResponseRedirect(reverse('workstudy:login'))
@@ -640,11 +634,11 @@ def application(request):
 			# app_availbility_instance = app_availability_form.save(commit=False)
 			# here you can add more fields or change them the way you want, after that you will save them
 			app_data_instance.personal_info = personal_info_instance
-			site_placement_rank_instance.app_data = app_data_instance
 			#app_availbility_instance.app_data = app_data_instance
 			if not PersonalInfo.objects.filter(student_id = personal_info_instance.student_id).exists():
 				personal_info_instance.save()
 			app_data_instance.save()
+			site_placement_rank_instance.app_data = app_data_instance
 			site_placement_rank_instance.save()
 			# messages.info(request, str(app_avail_days))
 			for i in range(len(app_avail_days)):

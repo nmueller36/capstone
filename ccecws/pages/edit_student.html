@@ -9,7 +9,7 @@
   <form action="." method="POST"> {% csrf_token %}
     <h1>EDITING</h1>
       <input type="hidden" name="student_id" value="{{ student_id }}">
-      <label> Student ID: {{student_id}} </label>
+    <!--  <label> Student ID: {{student_id}} </label> -->
   {% for info in allPersonalInfo %}
 <!--  <input type="hidden" name="student_id" value="{{ info.student_id }}">
      <label> Student ID: {{info.student_id}} </label>-->
@@ -17,10 +17,73 @@
 
   {% endfor %}
   {{ per_info_form|crispy }}
-  {{app_data_info_form|crispy}}
-  {{app_avail_info_form}}
+  {{app_info_form|crispy}}
   {{site_rank_info_form|crispy}}
-  {{student_placement_form|crispy}}
+  {{student_placement_info_form|crispy}}
+  <div class="table-responsive">
+  <table id="availability-container" class="table">
+    {% for d in data %}
+    <tr>
+     <td>
+      <label>{{d.day.label}}</label><br>
+      <select name="days[]">
+        <option value = "sunday" {% if d.day == 'sunday' %}selected{% endif %}> Sunday
+        <option value = "monday" {% if d.day == 'monday' %}selected{% endif %}> Monday
+        <option value = "tuesday" {% if d.day == 'tuesday' %}selected{% endif %}> Tuesday
+        <option value = "wednesday" {% if d.day == 'wednesday' %}selected{% endif %}> Wednesday
+        <option value = "thursday" {% if d.day == 'thursday' %}selected{% endif %}> Thursday
+        <option value = "friday" {% if d.day == 'friday' %}selected{% endif %}> Friday
+        <option value = "saturday" {% if d.day == 'saturday' %}selected{% endif %}> Saturday
+       </select>
+     </td>
+     <td>
+      <!-- {{app_availability_form.day}} -->
+      <label>{{d.start_time.label}}</label><br>
+      <input name="start_time[]" type="time" value="{{ d.start_time }}">
+     </td>
+     <td>
+      <!-- {{app_availability_form.start_time}} -->
+      <label>{{d.end_time.label}}</label><br>
+      <input name="end_time[]" type="time" value="{{ d.end_time }}">
+     </td>
+    </tr>
+    {% endfor %}
+      <!-- {{app_availability_form.end_time}} -->
+      <!-- <div class="input-group-append"> -->
+  </table>
+  </div>
+  <div class="table-responsive">
+  <table id="availability-container" class="table">
+    {% for d in app_avail %}
+    <tr>
+     <td>
+      <label>{{d.day.label}}</label><br>
+      <select name="days[]">
+        <option value = "sunday" {% if d.day == 'sunday' %}selected{% endif %}> Sunday
+        <option value = "monday" {% if d.day == 'monday' %}selected{% endif %}> Monday
+        <option value = "tuesday" {% if d.day == 'tuesday' %}selected{% endif %}> Tuesday
+        <option value = "wednesday" {% if d.day == 'wednesday' %}selected{% endif %}> Wednesday
+        <option value = "thursday" {% if d.day == 'thursday' %}selected{% endif %}> Thursday
+        <option value = "friday" {% if d.day == 'friday' %}selected{% endif %}> Friday
+        <option value = "saturday" {% if d.day == 'saturday' %}selected{% endif %}> Saturday
+       </select>
+     </td>
+     <td>
+      <!-- {{app_availability_form.day}} -->
+      <label>{{d.start_time.label}}</label><br>
+      <input name="start_time[]" type="time" value="{{ d.start_time }}">
+     </td>
+     <td>
+      <!-- {{app_availability_form.start_time}} -->
+      <label>{{d.end_time.label}}</label><br>
+      <input name="end_time[]" type="time" value="{{ d.end_time }}">
+     </td>
+    </tr>
+    {% endfor %}
+      <!-- {{app_availability_form.end_time}} -->
+      <!-- <div class="input-group-append"> -->
+  </table>
+  </div>
   <button class="btn btn-primary" type="submit" name = "edit_student">Submit</button>
   </form>
 

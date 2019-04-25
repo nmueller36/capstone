@@ -89,7 +89,10 @@ class SitePlacementRank(models.Model): #section of application that will rank wh
 	hospice          = models.CharField(max_length=10, null=True, choices = RANKING)
 	other            = models.CharField(max_length=10, null=True, choices = RANKING)
 	def __str__(self):
-		return self.personal_info.first_name + " " + self.personal_info.last_name + " (" + self.personal_info.email + ")" + " " + self.semester
+		if self.app_data and self.app_data.personal_info:
+			return self.app_data.personal_info.first_name + " " + self.app_data.personal_info.last_name + " (" + self.app_data.personal_info.email + ")" + " " + self.app_data.semester
+		else:
+			return self.id
 
 
 class AppAvailability(models.Model): #where student will enter their availility to work on application
@@ -140,9 +143,15 @@ class StudentPlacement(models.Model): #once a ccec worker finds a placement for 
 	ppd             = models.CharField(max_length=256, null=True)
 	comments        = models.CharField(max_length=10000, null=True)
 
+	def __str__(self):
+		return self.personal_info.first_name + " " + self.personal_info.last_name
+
 
 class StudentSchedule(models.Model): # where a student's work study schedule will be enetered
 	student_placement  = models.ForeignKey(StudentPlacement, on_delete=models.CASCADE, blank=True, null=True)
 	day                = models.CharField(max_length=256, null=True)
 	start_time         = models.TimeField(null=True, auto_now=False)
 	end_time           = models.TimeField(null=True, auto_now=False)
+
+	def __str__(self):
+		return self.student_placement.personal_info.first_name + " " + self.student_placement.personal_info.last_name
