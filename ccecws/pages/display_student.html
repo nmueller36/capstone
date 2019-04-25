@@ -4,6 +4,7 @@
 
 {% block content %}
 <div class="lead">
+<<<<<<< HEAD
   {% for info in allPersonalInfo %}
     <h1>{{info.preferred_name}} {{info.last_name}}</h1>
     {% for data in allAppData %}
@@ -20,6 +21,29 @@
         <button type="submit" class="btn btn-primary" name = "submit_edit">Edit</button>
       </form>
     {% endfor %}
+=======
+    <h1>{{allPersonalInfo.preferred_name}} {{allPersonalInfo.last_name}}</h1>
+      <table>
+        <tr>
+            <td>
+              <form action="/edit_student/" method="POST">{% csrf_token %}
+                <input type="hidden" name="student_name" value="{{ allPersonalInfo.preferred_name }} {{ allPersonalInfo.last_name }}">
+                <input type="hidden" name="student_id" value="{{ allPersonalInfo.student_id }}">
+                <button type="submit" class="btn btn-secondary" name = "submit_edit">Edit</button>
+              </form>
+            </td>
+          <td style="width: 100px;">
+            {% if allAppData.placement != True %}
+            <form action="/placement/" method="POST">{% csrf_token %}
+              <input type="hidden" name="student_name" value="{{ allPersonalInfo.preferred_name }} {{ allPersonalInfo.last_name }}">
+              <input type="hidden" name="student_id" value="{{ allPersonalInfo.student_id }}">
+              <button type="submit" class="btn btn-primary" name="submit_placement">Place</button>
+            </form>
+            {% endif %}
+          </td>
+      </tr>
+      </table>
+>>>>>>> c081dd5052a4f6a98067133dc93ce3ee586acefb
 
   <!--  <a class="btn btn-primary" href="/user/info/edit/?id={{ info.student_id }}" role="button">Edit</a>-->
     <h3>Application Info</h3>
