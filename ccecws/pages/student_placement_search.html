@@ -25,16 +25,16 @@
     <div class="card">
       <ul class="list-group list-group-flush">
         {% for obj in PerInfo %}
-        <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
+        <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
         {% for obj in StudPlace %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
         {% for obj in StudSched %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
         {% for obj in SiteInfo %}
-        <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+        <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
         {% endfor %}
       </ul>
     </div>
@@ -56,6 +56,15 @@
         <div class="form-group">
           <label for="r" class="mr-sm-2">Email: </label>
           <input class="form-control mb-2 mr-sm-2" type="text" name="r" id="r" value="{{request.GET.r}}">
+        </div>
+        <div class="form-group">
+          <label for="x">Semester: </label>
+          <select class="form-control mb-2 mr-sm-2" name="x" id="x" value="{{request.GET.x}}">
+            <option disabled selected value>-- select an option -- </option>
+            {% for year in years %}
+            <option>{{year}}</option>
+            {% endfor %}
+          </select>
         </div>
         <div class="form-group">
           <label for="s" class="mr-sm-2">Site Name: </label>
@@ -92,16 +101,16 @@
       <div class="card">
         <ul class="list-group list-group-flush">
           {% for obj in PerInfo %}
-          <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
+            <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
           {% endfor %}
           {% for obj in StudPlace %}
-          <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+            <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
           {% endfor %}
           {% for obj in StudSched %}
-          <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+            <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
           {% endfor %}
           {% for obj in SiteInfo %}
-          <li class="list-group-item">  {{obj.first_name}} {{obj.last_name}} {{obj.email}}</li>
+            <li class="list-group-item"><a href="/user/info/?id={{ obj.student_id }}">{{obj.first_name}} {{obj.last_name}} {{obj.email}}</a></li>
           {% endfor %}
         </ul>
       </div>

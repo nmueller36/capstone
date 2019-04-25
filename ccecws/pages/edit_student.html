@@ -13,7 +13,7 @@
   {% for info in allPersonalInfo %}
 <!--  <input type="hidden" name="student_id" value="{{ info.student_id }}">
      <label> Student ID: {{info.student_id}} </label>-->
-    <h1>{{info.preferred_name}} {{info.last_name}}</h1>
+    <label>{{info.preferred_name}} {{info.last_name}}</label>
 
   {% endfor %}
   {{ per_info_form|crispy }}
