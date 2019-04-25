@@ -521,29 +521,32 @@ def edit_student(request):
 	if request.user.is_authenticated:
 		if request.method == "POST"  and 'edit_student' in request.POST: #where the form is rendered
 			student_id = int(request.POST.get('student_id'))
-			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = student_id)
-			allAppData = AppData.objects.filter(personal_info__student_id = student_id)
-			per_details = PersonalInfo.objects.get(student_id = student_id)
-			app_details = AppData.objects.get(personal_info__student_id = student_id)
-			per_info = EditStudentPerForm(request.POST, instance = per_details)
-			app_info = EditStudentAppForm(request.POST, instance = app_details)
+			allAppData = AppData.objects.filter(personal_info__student_id = student_id).order_by('-timeStamp')[0]
+			old_per_info_instance = PersonalInfo.objects.get(student_id = student_id)
+			old_app_data_instance = allAppData
+			per_info_form = EditStudentPerForm(request.POST, instance = old_per_info_instance)
+			app_data_form = EditStudentAppForm(request.POST, instance = old_app_data_instance)
 
 			if allAppData.placement == True: #has placement
-				student_placement_details = StudentPlacement.objects.get(personal_info__student_id = student_id)
-				student_schedule_details = StudentSchedule.objects.get(student_placement__personal_info__student_id = student_id)
-				student_placement_info = EditStudentPlacementForm(request.POST, instance = student_placement_details)
-				student_schedule_info = EditStudentScheduleForm(request.POST, instance = student_schedule_details)
+				old_student_placement_instance = StudentPlacement.objects.get(app_data=allAppData)
+				student_placement_form= EditStudentPlacementForm(request.POST, instance = old_student_placement_instance)
+				student_schedule_days = request.POST.getlist('days[]')
+				student_schedule_start_time = request.POST.getlist('start_time[]')
+				student_schedule_end_time = request.POST.getlist('end_time[]')
 
-
-				if per_info.is_valid() and app_info.is_valid() and student_placement_info.is_valid() and student_schedule_info.is_valid(): # and site_placement_rank_form.is_valid():
-					per_info_instance = per_info.save(commit=False)
-					app_instance = app_info.save(commit=False)
-					student_placement_instance = student_placement_info.save(commit=False)
-					student_schedule_instance = student_schedule_info.save(commit=False)
+				if per_info_form.is_valid() and app_data_form.is_valid() and student_placement_form.is_valid(): # and site_placement_rank_form.is_valid():
+					per_info_instance = per_info_form.save(commit=False)
+					app_instance = app_data_form.save(commit=False)
+					student_placement_instance = student_placement_form.save(commit=False)
 					per_info_instance.save()
 					app_instance.save()
 					student_placement_instance.save()
-					student_schedule_instance.save()
+					StudentSchedule.objects.filter(student_placement__app_data__id=allAppData.id).delete()
+
+					for i in range(len(student_schedule_days)):
+						if student_schedule_days[i] and student_schedule_start_time[i] and student_schedule_end_time[i]:
+							user_availability = StudentSchedule(student_placement=student_placement_instance, day=student_schedule_days[i], start_time=student_schedule_start_time[i], end_time=student_schedule_end_time[i])
+							user_availability.save()
 					return redirect('workstudy:edit_completed')
 
 				else:
@@ -551,23 +554,26 @@ def edit_student(request):
 					return redirect('workstudy:edit_student')
 
 			else: #not placed yet
-				allAppAvail = AppAvailability.objects.get(app_data__personal_info__student__id = student_id)
-				allSiteRank = SitePlacementRank.objects.get(app_data__personal_info__student__id = student_id)
-				app_avail_details = AppAvailability.objects.get(app_data__personal_info__student_id = student_id)
-				site_rank_details = SitePlacementRank.objects.get(app_data__personal_info__student_id = student_id)
-				app_avail_info = EditStudentAvailForm(request.POST, instance = app_avail_details)
-				site_rank_info = EditStudentRankForm(request.POST, instance = site_rank_details)
+				old_site_ranking_instance = SitePlacementRank.objects.get(app_data=allAppData)
+				site_ranking_form = EditStudentRankForm(request.POST, instance=old_site_ranking_instance)
+				app_avail_days = request.POST.getlist('days[]')
+				app_avail_start_time = request.POST.getlist('start_time[]')
+				app_avail_end_time = request.POST.getlist('end_time[]')
 
 
-				if per_info.is_valid() and app_info.is_valid() and app_avail_info.is_valid() and site_rank_info.save(): # and site_placement_rank_form.is_valid():
-					per_info_instance = per_info.save(commit=False)
-					app_instance = app_info.save(commit=False)
-					app_avail_instance = app_avail_info.save(commit=False)
-					site_rank_instance = aite_rank_info.save(commit=False)
+				if per_info_form.is_valid() and app_data_form.is_valid() and site_ranking_form.is_valid(): # and site_placement_rank_form.is_valid():
+					per_info_instance = per_info_form.save(commit=False)
+					app_instance = app_data_form.save(commit=False)
+					site_ranking_instance = site_ranking_form.save(commit=False)
 					per_info_instance.save()
 					app_instance.save()
-					app_avail_instance.save()
-					site_rank_instance.save()
+					site_ranking_instance.save()
+					AppAvailability.objects.filter(app_data__id=allAppData.id).delete()
+
+					for i in range(len(app_avail_days)):
+						if app_avail_days[i] and app_avail_start_time[i] and app_avail_end_time[i]:
+							user_availability = AppAvailability(app_data=app_instance, day=app_avail_days[i], start_time=app_avail_start_time[i], end_time=app_avail_end_time[i])
+							user_availability.save()
 
 					return redirect('workstudy:edit_completed')
 
@@ -576,12 +582,14 @@ def edit_student(request):
 					return redirect('workstudy:edit_student')
 
 		elif request.method == "POST" and 'submit_edit' in request.POST: # when edit button is clicked, this is what it displays
+			context = {}
 			student_id = int(request.POST.get('student_id'))
-			allPersonalInfo = PersonalInfo.objects.all().filter(student_id = student_id)
+			context['student_id'] = student_id
+			allPersonalInfo = PersonalInfo.objects.get(student_id = student_id)
 			allAppData = AppData.objects.filter(personal_info__student_id = student_id).order_by('-timeStamp')[0]
+			context['allPersonalInfo'] = allPersonalInfo
 
 			if allAppData.placement == True: #has placement
-				context = {}
 				context['per_info_form'] = EditStudentPerForm(instance = PersonalInfo.objects.get(student_id = student_id))
 				context['app_info_form'] = EditStudentAppForm(instance = allAppData)
 				context['student_placement_info_form'] = EditStudentPlacementForm(instance = StudentPlacement.objects.get(app_data=allAppData))
@@ -591,7 +599,6 @@ def edit_student(request):
 					d.end_time = d.end_time.strftime('%H:%M:%S')
 				context['data'] = data
 			else:# no placcement
-				context = {}
 				context['per_info_form'] = EditStudentPerForm(instance = PersonalInfo.objects.get(student_id = student_id))
 				context['app_info_form'] = EditStudentAppForm(instance = allAppData)
 				context['site_rank_info_form'] = EditStudentRankForm(instance = SitePlacementRank.objects.get(app_data=allAppData))

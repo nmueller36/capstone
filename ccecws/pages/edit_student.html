@@ -10,12 +10,10 @@
     <h1>EDITING</h1>
       <input type="hidden" name="student_id" value="{{ student_id }}">
     <!--  <label> Student ID: {{student_id}} </label> -->
-  {% for info in allPersonalInfo %}
 <!--  <input type="hidden" name="student_id" value="{{ info.student_id }}">
      <label> Student ID: {{info.student_id}} </label>-->
-    <label>{{info.preferred_name}} {{info.last_name}}</label>
+    <label>{{allPersonalInfo.preferred_name}} {{allPersonalInfo.last_name}}</label>
 
-  {% endfor %}
   {{ per_info_form|crispy }}
   {{app_info_form|crispy}}
   {{site_rank_info_form|crispy}}
